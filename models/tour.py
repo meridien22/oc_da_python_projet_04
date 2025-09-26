@@ -7,12 +7,12 @@ class Tour:
     def __init__(self, tournoi, nom):
         self.nom = nom
         self.date_heure_debut = self.get_date_heure()
+        self.date_heure_fin = None
         self.tournoi = tournoi
         self.matchs = []
 
     def __str__(self):
-        return (f"Tour {self.nom } du tournoi {self.tournoi.nom} "
-                f"{len(self.matchs)} matchs")
+        return (f"Tour {self.nom}")
 
     def get_date_heure(self):
         """Retourne la date du jour avec les heures et les minutes"""
@@ -20,40 +20,61 @@ class Tour:
 
     def melanger_joueur(self):
         """Mélange les joueurs d'un tour de manière aléatoire"""
-        random.shuffle(self.tournoi.joueurs)
+        random.shuffle(self.tournoi.joueurs_scores)
+
+    def trier_joueur(self):
+        """Trie les joueurs en fonction de leur score"""
+        self.tournoi.joueurs_scores.sort(key=lambda element:element[1])
 
     def generer_match(self):
         """Retourne la liste des matchs d'un tour"""
-        index_joueur_1 = 0
-        index_joueur_2 = 1
+        index_joueur_score_1 = 0
+        index_joueur_score_2 = 1
 
-        while index_joueur_2 < len(self.tournoi.joueurs):
-            joueur_1 = self.tournoi.joueurs[index_joueur_1]
-            joueur_2 = self.tournoi.joueurs[index_joueur_2]
-            match = Match(self.tournoi, self, joueur_1, joueur_2)
-            self.matchs.append(match)
-            index_joueur_1 += 2
-            index_joueur_2 += 2
+        while index_joueur_score_2 < len(self.tournoi.joueurs_scores):
+            joueur_score_1 = self.tournoi.joueurs_scores[index_joueur_score_1]
+            joueur_score_2 = self.tournoi.joueurs_scores[index_joueur_score_2]
+            match = Match(self.tournoi, self, joueur_score_1, joueur_score_2)
+            if match.identifiant not in self.tournoi.identifiant_matchs:
+                self.matchs.append(match)
+                self.tournoi.identifiant_matchs.append(match.identifiant)
+            else:
+                self.eviter_rejouer_match(index_joueur_score_2)
+                joueur_score_1 = self.tournoi.joueurs_scores[index_joueur_score_1]
+                joueur_score_2 = self.tournoi.joueurs_scores[index_joueur_score_2]
+                match = Match(self.tournoi, self, joueur_score_1, joueur_score_2)
+                self.matchs.append(match)
+                self.tournoi.identifiant_matchs.append(match.identifiant)
+            index_joueur_score_1 += 2
+            index_joueur_score_2 += 2
 
-    def generer_match_old(self):
-        """Retourne la liste des matchs d'un tour d'un tournoi"""
-        identifiant_matchs = []
-        for joueur1 in self.tournoi.joueurs:
-            for joueur2 in self.tournoi.joueurs:
-                if joueur1 != joueur2:
-                    match = Match(self.tournoi, self, joueur1, joueur2)
-                    if match.identifiant not in identifiant_matchs:
-                        self.matchs.append(match)
-                        identifiant_matchs.append(match.identifiant)
+    def eviter_rejouer_match(self, index_joueur_score_2):
+        """En cas de match déjà joué, permet de proposer un match
+        entre leindex_joueur_score_2 joueur 1 et le joueur situé après le joueur 2"""
+        if index_joueur_score_2 < len(self.tournoi.joueurs_scores) - 1:
+            joueur_score = self.tournoi.joueurs_scores.pop(index_joueur_score_2)
+            self.tournoi.joueurs_scores.insert(index_joueur_score_2 + 1, joueur_score)
 
-    def get_resultat(self):
-        """Donne les scores des joueurs pour le tour"""
-        resultats = []
+    def get_match_resume(self):
+        """Retourne la liste des matchs d'un tour"""
+        match_resume = []
         for match in self.matchs:
-            joueur_1 = match.get_joueur_1()
-            joueur_2 = match.get_joueur_2()
-            score_1 = match.get_score_joueur_1()
-            score_2 = match.get_score_joueur_2()
-            resultats.append(f"{joueur_1} : {score_1}")
-            resultats.append(f"{joueur_2} : {score_2}")
-        return resultats
+            match_resume.append(str(match))
+        return " / ".join(match_resume)
+
+    def auto_play(self):
+        """Simule un tour en résolvant aléatoirement les matchs"""
+        for match in self.matchs:
+            gagnant = match.get_gagnant_aleatoire()
+            if gagnant:
+                perdant = match.get_autre_joueur(gagnant)
+                match.ajouter_score(gagnant, Match.SCORE_GAGNANT)
+                match.ajouter_score(perdant, Match.SCORE_PERDANT)
+            else:
+                joueur_1 = match.get_joueur_1()
+                joueur_2 = match.get_joueur_2()
+                match.ajouter_score(joueur_1, Match.SCORE_MATCH_NUL)
+                match.ajouter_score(joueur_2, Match.SCORE_MATCH_NUL)
+
+    def finir(self):
+        self.date_heure_fin = self.get_date_heure()

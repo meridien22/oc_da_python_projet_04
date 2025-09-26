@@ -9,6 +9,9 @@ class Joueur:
     def __str__(self):
         return f"{self.prenom}"
 
+    def __repr__(self):
+        return str(self)
+
     def __lt__(self, other):
         return self.identifiant_national < other.identifiant_national
 
