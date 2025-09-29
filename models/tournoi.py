@@ -1,5 +1,7 @@
 class Tournoi:
-
+    """
+    Classe qui permet de gérer un tournoi d'échec.
+    """
     # Nombre de tours par défaut du tournoi
     NOMBRE_TOURS_DEFAUT = 4
     # Score par défaut d'un joueur en début de tournoi
