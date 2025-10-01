@@ -1,13 +1,9 @@
-from .joueur import Joueur
-from .tournoi import Tournoi
-from .tour import Tour
-from .tournoi_manager import TournoiManager
-from .menu import Menu
+from .player import Player
+from .tournament import Tournament
+from .round import Round
 
 __all__ = [
-    "Joueur",
-    "Tournoi",
-    "Tour",
-    "TournoiManager",
-    "Menu"
+    "Player",
+    "Tournament",
+    "Round"
 ]
