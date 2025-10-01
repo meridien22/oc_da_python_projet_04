@@ -33,6 +33,7 @@ def lancer_tournoi_auto():
         tour.auto_play()
         tour.finir()
         compteur_tour += 1
+    print(tournoi.get_score())
 
 def lancer_tournoi_manuel():
     # choix = [
@@ -51,5 +52,5 @@ def lancer_tournoi_manuel():
 
 
 
-# lancer_tournoi_auto()
-lancer_tournoi_manuel()
+lancer_tournoi_auto()
+# lancer_tournoi_manuel()
