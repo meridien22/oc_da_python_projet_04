@@ -40,7 +40,6 @@ class Tournament:
 
     def add_round(self, round_):
         self.round_list.append(round_)
-        self.calculate_score(round_)
 
     def calculate_score(self, round_):
         for match in round_.match_list:
@@ -62,6 +61,14 @@ class Tournament:
         for player in self.player_list:
             player_list.append(f"{str(player)} ({player.score})")
         return player_list
+
+    def get_rounds_matchs(self):
+        """Retourne les rounds du tournoi"""
+        round_list = []
+        for index, round_ in enumerate(self.round_list):
+            round_list.append(f"Tour {index + 1} débuté à {str(round_)}")
+            round_list.append(round_.get_match_resume())
+        return round_list
 
     def get_match(self):
         """" Renvoi les matches d'un tour

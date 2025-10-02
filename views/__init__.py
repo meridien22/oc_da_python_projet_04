@@ -1,7 +1,4 @@
-from .terminal import TerminalView
-from .tableau import Tableau
+from .display import Display
+from .display_parameters import display_parameters
 
-__all__ = [
-    "TerminalView",
-    "Tableau"
-]
+__all__ = ["Display", "display_parameters"]

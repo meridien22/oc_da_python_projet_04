@@ -4,13 +4,12 @@ import datetime
 class Round:
     """Créer un tour pour un tournoi d'échec"""
     def __init__(self, match_list):
-        self.name = None
         self.date_time_start = self.get_date_time()
         self.date_time_end = None
         self.match_list = match_list
 
     def __str__(self):
-        return (f"Tour {self.name}")
+        return (f"{self.date_time_start}")
 
     def get_date_time(self):
         """Retourne la date du jour avec les heures et les minutes"""

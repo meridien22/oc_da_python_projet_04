@@ -12,10 +12,18 @@ class Match:
         self.winner = None
 
     def __str__(self):
-        player_1_first_name = self.player_1.first_name
-        player_2_first_name = self.player_2.first_name
-        return (f"{player_1_first_name} contre {player_2_first_name} : "
-                f"Gagnant => {str(self.winner)}")
+        first_name_1= self.player_1.first_name
+        first_name_2 = self.player_2.first_name
+        name_1= self.player_1.name
+        name_2 = self.player_2.name
+        if self.winner is None:
+            winner = "Match non joué"
+        else :
+            winner = self.winner.first_name + " " + self.winner.name
+        return (f"{first_name_1} {name_1} "
+                f"contre "
+                f"{first_name_2} {name_2} : "
+                f"Gagnant => {winner}")
 
     def get_id_match(self):
         """Retourne l'identifiant unique d'un match en fonction des
