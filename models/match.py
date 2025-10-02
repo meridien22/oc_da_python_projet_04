@@ -1,5 +1,6 @@
 import random
 
+
 class Match:
 
     def __init__(self, player_1, player_2):
@@ -11,7 +12,9 @@ class Match:
         self.winner = None
 
     def __str__(self):
-        return (f"{self.player_1.first_name} contre {self.player_2.first_name} : "
+        player_1_first_name = self.player_1.first_name
+        player_2_first_name = self.player_2.first_name
+        return (f"{player_1_first_name} contre {player_2_first_name} : "
                 f"Gagnant => {str(self.winner)}")
 
     def get_id_match(self):
@@ -46,7 +49,7 @@ class Match:
             return self.player_1
         else:
             tirage = random.randint(0, 2)
-            if  tirage == 1:
+            if tirage == 1:
                 return self.player_1
             elif tirage == 2:
                 return self.player_2

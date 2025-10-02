@@ -2,6 +2,7 @@ import random
 from .match import Match
 from .player import Player
 
+
 class Tournament:
     """
     Classe qui permet de gérer un tournoi d'échec.
@@ -23,10 +24,12 @@ class Tournament:
         self.player_list = []
         self.round_list = []
         self.description = description
-        # liste qui stocke tous les identifiants des matchs pour être sûr de ne pas rejouer un match
+        # liste qui stocke tous les identifiants des matchs
+        # pour être sûr de ne pas rejouer un match
         self.id_matchs = []
         self.round_number = self.DEFAULT_NUMBER_ROUND
-        # Permet de savoir si c'est le premier tour ou pas car le tirage est différent
+        # Permet de savoir si c'est le premier tour ou pas
+        # car le tirage est différent
         self.first_round = False
 
     def __str__(self):
@@ -61,6 +64,10 @@ class Tournament:
         return player_list
 
     def get_match(self):
+        """" Renvoi les matches d'un tour
+        1er tour : tirage aléatoire
+        tour suivant : tirage score => tirage logique => tirage aléatoire"""
+
         # si c'est le premier match, on mélange les joueurs aléatoirement
         if self.first_round:
             random.shuffle(self.player_list)
@@ -69,66 +76,63 @@ class Tournament:
         else:
             self.player_list.sort(key=lambda element: element.score)
 
-        draw =self.get_draw()
+        draw = self.get_draw()
         index_modifier = 1
         while draw == "Echec":
-            print("**********************************************************************")
-            print("Nouvelle tentaive")
-            print(self.player_list)
-            print(index_modifier)
-            print("***************index_modifier*******************************************************")
             draw = self.get_draw()
-            # on soustrait à la liste le joueur qui correxpond à l'index modifieur
-            player_modifier = self.player_list.pop()
-            # on l'insert dans la liste à la position suivante
-            self.player_list.insert(index_modifier + 1, player_modifier)
-            # on tente un nouveau tirage
-            draw = self.get_draw()
-            index_modifier += 1
+            # tirage logique en essayant de respecter le plus possible
+            # le tri par score
+            if index_modifier < len(self.player_list):
+                # on soustrait à la liste le joueur qui correxpond
+                # à l'index modifieur
+                player_modifier = self.player_list.pop(index_modifier)
+                # on l'insert dans la liste à la position suivante
+                self.player_list.insert(index_modifier + 1, player_modifier)
+                index_modifier += 1
+            # tirage aléatoire car la méthode précédnte a échoué
+            else:
+                random.shuffle(self.player_list)
+
         return draw
 
     def get_draw(self):
-        """Procède à un tirage pour un tour"""
-        print("----------DEBUT TIRAGE----------------")
+        """Propose un tirage pour un tour"""
         index_player_1 = 0
         index_player_2 = 1
         match_list = []
 
         while index_player_2 < len(self.player_list):
             index_search = index_player_2
-            print("----------WHILE 1----------------")
-            print(f"index_player_1 {index_player_1}")
-            print(f"index_player_2 {index_player_2}")
-            match = Match(self.player_list[index_player_1], self.player_list[index_player_2])
+            player_1 = self.player_list[index_player_1]
+            player_2 = self.player_list[index_player_2]
+            match = Match(player_1, player_2)
+
             # cas où le match a déjà été joué
             while match.id in self.id_matchs:
-                print("----------WHILE 2----------------")
-                print(f"match {self.player_list[index_player_1]}-{self.player_list[index_player_2]} déjà joué")
-                print("+++++++++")
-                print(index_search + 1)
-                print(self.player_list)
-                print("+++++++++")
-                # cas ou l'algorythme n'a pas réussi à proposer une combinaison cohérente
+                # cas ou l'algorithme n'a pas réussi à proposer
+                # une combinaison cohérente car
                 # l'index de recherce est arrivé au bout de la liste
                 if index_search + 1 == len(self.player_list):
-                    print("je quitte ça va exploser !!!!!!!!!!!!!!!!!!!!!!!!!!")
                     return "Echec"
                 # on soustrait à la liste le joueur qui vient après le joueur 2
                 player_next = self.player_list.pop(index_search + 1)
                 # on l'insert dans la liste après le joueur 1
                 self.player_list.insert(index_player_1 + 1, player_next)
-                # on crée un nouveau match pour pouvoir tester s'il a déjà été joué ou non
+                # on crée un nouveau match pour pouvoir tester
+                # s'il a déjà été joué ou non
                 player_1 = self.player_list[index_player_1]
                 player_2 = self.player_list[index_player_2]
                 match = Match(player_1, player_2)
-                print(f"je tente {player_1}-{player_2}")
                 # on incrémente l'index de recherche de 1 pour aller chercher
                 # le prochain candididat si le match a déjà été joué
                 index_search += 1
 
             match_list.append(match)
-            self.id_matchs.append(match.id)
             index_player_1 += 2
             index_player_2 += 2
 
+        # on ajoute les identifiants des macthes à la liste id_matchs
+        # permet d'avoir un suivi des matches déjà joués
+        for match in match_list:
+            self.id_matchs.append(match.id)
         return match_list

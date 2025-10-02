@@ -12,7 +12,7 @@ class Player:
         self.score = self.SCORE_BASE
 
     def __str__(self):
-        return f"{self.first_name} {self.name}"
+        return f"{self.first_name}"
 
     def __repr__(self):
         return str(self)

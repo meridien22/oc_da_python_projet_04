@@ -2,8 +2,4 @@ from .player import Player
 from .tournament import Tournament
 from .round import Round
 
-__all__ = [
-    "Player",
-    "Tournament",
-    "Round"
-]
+__all__ = ["Player", "Tournament", "Round"]
