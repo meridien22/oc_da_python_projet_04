@@ -7,21 +7,17 @@ class Controller:
     def __init__(self, display):
         self.display = display
 
-    def get_main_menu(self):
-        self.display.configure(display_parameters["00"])
+    def get_menu_choice(self, id_menu):
+        self.display.configure(display_parameters[id_menu])
         return self.display.get_input_choice()
 
-    def get_main_menu_tournament(self):
-        self.display.configure(display_parameters["001"])
-        return self.display.get_input_choice()
-
-    def get_input_tournament_name(self):
-        self.display.configure(display_parameters["10"])
+    def get_menu_input(self, id_menu):
+        self.display.configure(display_parameters[id_menu])
         return self.display.get_input()
 
-    def get_input_tournament_place(self):
-        self.display.configure(display_parameters["11"])
-        return self.display.get_input()
+    def get_confirmation(self):
+        self.display.configure(display_parameters["50"])
+        return self.display.get_confirmation()
 
     def get_list_tournament(self, tournament_liste):
         parameter = display_parameters["20"]
@@ -46,18 +42,6 @@ class Controller:
         self.display.configure(parameter)
         return self.display.get_input_choice()
 
-    def get_input_player_name(self):
-        self.display.configure(display_parameters["30"])
-        return self.display.get_input()
-
-    def get_input_player_hint(self):
-        self.display.configure(display_parameters["40"])
-        return self.display.get_input()
-
-    def get_confirmation(self):
-        self.display.configure(display_parameters["50"])
-        return self.display.get_input()
-
     def get_list_round_match(self, tournament_active):
         parameter = display_parameters["100"]
         parameter["content"] = tournament_active.get_rounds_matchs()
@@ -65,9 +49,18 @@ class Controller:
         return self.display.get_input()
 
 class Tool():
-    def set_main_tile(self, title):
-        title = f"Tournoi en cours : {title}"
-        display_parameters["001"]["title"] = title
+
+    # Aucun tournoi n'est commencé.
+    TOURNAMENT_NOT_STARTING = 0
+    # Un tournoi est commencé sans aucun joueur.
+    TOURNAMENT_STARTING_WITHOUT_PLAYER = 1
+    # Un tournoi et un tour avec des joueurs
+    ROUND_STARTING_WITH_PLAYER = 2
+    # Un tournoi et un tour sont commencé
+    ROUND_STARTING = 3
+
+    def set_tile(self, id_menu, title):
+        display_parameters[id_menu]["title"] = title
 
     def get_national_id(self):
         letter_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
@@ -92,3 +85,13 @@ class Tool():
             return player_list
         else:
             return player_hint
+
+    def get_tournament_statement(self, tournament, round_):
+        if tournament is None :
+            return self.TOURNAMENT_NOT_STARTING
+        elif tournament is not None and round_ is None:
+            return self.TOURNAMENT_STARTING
+        elif tournament is not None and round_ is not None:
+            return self.ROUND_STARTING
+        else:
+            return None

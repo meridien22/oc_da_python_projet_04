@@ -4,3 +4,4 @@ __pycache__/
 #Données spécifiques au projet
 data
 atelier/
+test.py

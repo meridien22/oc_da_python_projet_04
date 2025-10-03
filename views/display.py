@@ -30,11 +30,19 @@ class Display:
         self.initialize()
         while True:
             choice = input(self.input)
-            if len(choice) >=2:
+            if len(choice) >=3:
                 break
             else:
-                print("Vous devez au moins saisir 2 caractères.")
+                print("Vous devez au moins saisir 3 caractères.")
         return choice
+
+    def get_confirmation(self):
+        self.initialize()
+        choice = input(self.input)
+        if choice in ("y", "Y"):
+            return True
+        else:
+            return False
 
     def get_input_choice(self):
         self.initialize()

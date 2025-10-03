@@ -66,64 +66,85 @@ player_list_all = []
 player_list_tournament = []
 tool = Tool()
 tournament_active = None
+round_active = None
 controller = Controller(Display())
-choice = controller.get_main_menu()
+choice = controller.get_menu_choice("00")
 
 player_list_all.append(Player("Kasparov", "Garry", "13/04/1963", "AA00000"))
 player_list_all.append(Player("Blue", "Deep", "15/05/1997", "XX00000"))
 tournament_list.append(Tournament("T01", "Le Grand échiquier", "Libreville", "01/12/2025", ""))
 
-while choice != "11":
-    if choice == "1":
-        # Créer un tournoi
-        name = controller.get_input_tournament_name()
-        # place = controller.get_input_tournament_place()
-        tournament = Tournament("XX", name, "Libreville", "01/12/2025", "")
-        tournament_list.append(tournament)
-    elif choice == "2":
-        # Démarrer un tournoi
-        tournament_index = controller.get_list_tournament(tournament_list)
-        index = int(tournament_index) - 1
-        tournament = tournament_list[index]
-        tool.set_main_tile(tournament.name)
-        tournament_active = tournament
-    elif choice == "3":
-        # Saisir un nouveau joueur
-        name = controller.get_input_player_name()
-        player = Player(name, "XX", "XX", tool.get_national_id())
-        player_list_all.append(player)
-    elif choice == "4":
-        # Ajouter un joueur au tournoi
-        hint = controller.get_input_player_hint()
-        player_list_hint = tool.get_list_player_from_hint(hint, player_list_all)
-        player_index = controller.get_list_player(player_list_hint, player_list_all)
-    elif choice == "5":
-        # Débuter un tour
-        # atttention, il faudra clôturer un tour pour calculer les scores
-        confirmation = controller.get_confirmation()
-        if confirmation in ("YES","yes"):
-            match_liste = tournament_active.get_match()
-            print(match_liste)
-            os.system("pause")
-            round_ = Round(match_liste)
-            tournament_active.add_round(round_)
-    elif choice == "6":
-        # Saisir un résultat
-        pass
-    elif choice == "7":
-        # Lister tous les joueurs
-        pass
-    elif choice == "8":
-        # Lister tous les tournois
-        pass
-    elif choice == "9":
-        # Lister tous les joueurs du tournoi
-        pass
-    elif choice == "10":
-        # Lister les tours et les matches du tour
-        controller.get_list_round_match(tournament_active)
+while choice != "12":
+    match choice:
+        case "1":
+            # Créer un tournoi
+            name = controller.get_menu_input("10")
+            # place = controller.get_menu_input("11")
+            tournament = Tournament("XX", name, "Libreville", "01/12/2025", "")
+            tournament_list.append(tournament)
+        case "2":
+            # Démarrer un tournoi
+            tournament_index = controller.get_list_tournament(tournament_list)
+            index = int(tournament_index) - 1
+            tournament = tournament_list[index]
+            tool.set_tile("001", tournament.name)
+            tournament_active = tournament
+        case "3":
+            # Saisir un nouveau joueur
+            name = controller.get_menu_input("30")
+            player = Player(name, "XX", "XX", tool.get_national_id())
+            player_list_all.append(player)
+        case "4":
+            # Ajouter un joueur au tournoi
+            hint = controller.get_menu_input("40")
+            player_list_hint = tool.get_list_player_from_hint(hint, player_list_all)
+            player_index = controller.get_list_player(player_list_hint, player_list_all)
+            player_index = int(player_index) - 1
+            tournament_active.add_player(player_list_all[player_index])
+        case "5":
+            # Débuter un tour
+            confirmation = controller.get_confirmation()
+            if confirmation:
+                if len(tournament_active.round_list) > 0:
+                    round_last = tournament_active.round_list[-1]
+                    print(round_last.match_list)
+                    if round_last.is_finished():
+                        print("nouveau round1")
+                        tournament_active.add_round()
+                        round_active = tournament_active.round_list[-1]
+                    else:
+                        print("recupère round")
+                        round_active = round_last
+                else:
+                    print("nouveau round2")
+                    tournament_active.add_round()
+                    round_active = tournament_active.round_list[-1]
+                tool.set_tile("002", tournament_active.name + " " + round_active.name)
+                os.system("pause")
+        case "6":
+            # Saisir un résultat
+            pass
+        case "7":
+            # Lister tous les joueurs
+            pass
+        case "8":
+            # Lister tous les tournois
+            pass
+        case "9":
+            # Lister tous les joueurs du tournoi
+            pass
+        case "10":
+            # Lister les tours et les matches du tour
+            controller.get_list_round_match(tournament_active)
+        case "11":
+            # Retour au menu principal
+            round_active = None
+            tournament_active = None
 
-    if tournament_active is None:
-        choice = controller.get_main_menu()
-    else:
-        choice = controller.get_main_menu_tournament()
+    match tool.get_tournament_statement(tournament_active, round_active):
+        case tool.TOURNAMENT_NOT_STARTING:
+            choice = controller.get_menu_choice("00")
+        case tool.TOURNAMENT_STARTING:
+            choice = controller.get_menu_choice("001")
+        case tool.ROUND_STARTING:
+            choice = controller.get_menu_choice("002")

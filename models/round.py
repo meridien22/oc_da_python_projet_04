@@ -3,10 +3,15 @@ import datetime
 
 class Round:
     """Créer un tour pour un tournoi d'échec"""
-    def __init__(self, match_list):
+    def __init__(self, round_list,  match_list):
         self.date_time_start = self.get_date_time()
         self.date_time_end = None
         self.match_list = match_list
+        self.name = self.get_name(round_list)
+
+    def get_name(self, round_list):
+        round_number = len(round_list) + 1
+        return f"Tour {round_number}"
 
     def __str__(self):
         return (f"{self.date_time_start}")
@@ -26,3 +31,10 @@ class Round:
         """Simule un tour en résolvant aléatoirement les matchs"""
         for match in self.match_list:
             match.winner = match.get_winner()
+
+    def is_finished(self):
+        finished = True
+        for match in self.match_list:
+            if match.winner is None:
+                finished = False
+        return finished
