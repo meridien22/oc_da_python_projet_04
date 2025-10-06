@@ -1,3 +1,4 @@
+
 class Player:
     """Crée un joueur pouvant participer au tournoi"""
 
@@ -8,7 +9,8 @@ class Player:
         self.id_national = id_national
 
     def __str__(self):
-        return f"{self.first_name}"
+        return f"{self.first_name} {self.name}"
 
     def __repr__(self):
         return str(self)
+

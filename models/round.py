@@ -14,11 +14,14 @@ class Round:
         return f"Tour {round_number}"
 
     def __str__(self):
-        return (f"{self.date_time_start}")
+        return f"{self.date_time_start}"
 
     def get_date_time(self):
         """Retourne la date du jour avec les heures et les minutes"""
         return datetime.datetime.now().strftime("%d/%m/%Y à %Hh%M")
+
+    def finish(self):
+        self.date_time_end = self.get_date_time()
 
     def get_match_resume(self):
         """Retourne la liste des matchs d'un tour"""

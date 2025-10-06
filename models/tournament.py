@@ -25,6 +25,7 @@ class Tournament:
         self.place = place
         self.date_start = date_start
         self.player_list = []
+        self.id_national_list = []
         self.round_list = []
         self.description = description
         # liste qui stocke tous les identifiants des matchs
@@ -41,8 +42,14 @@ class Tournament:
             "score" : self.SCORE_BASE,
             "opponent_list" : []
         })
+        self.id_national_list.append(player.id_national)
 
     def add_round(self):
+        # si il exsite un tour on le finit
+        if len(self.round_list) > 0:
+            roud_last = self.round_list[-1]
+            roud_last.finish()
+
         match_list = self.get_match()
         round_ = Round(self.round_list, match_list)
         self.round_list.append(round_)
