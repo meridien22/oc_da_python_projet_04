@@ -1,4 +1,7 @@
 import os
+from importlib.metadata import pass_none
+from unittest import case
+
 from controllers import *
 from models import *
 from views import *
@@ -153,6 +156,7 @@ from views import *
 
 # 3ème version
 
+
 # liste de tous les tournois
 tournament_list = []
 # liste de tous les joueurs
@@ -162,8 +166,12 @@ tool = Tool()
 
 player_list_all.append(Player("Kasparov", "Garry", "13/04/1963", "AA00000"))
 player_list_all.append(Player("Blue", "Deep", "15/05/1997", "XX00000"))
-player_list_all.append(Player("Poilpré", "Olivier", "01/05/1997", "BB00000"))
-player_list_all.append(Player("Popol", "Lucas", "01/05/1997", "CC00000"))
+player_list_all.append(Player("Lucas", "George", "01/05/1997", "BB00000"))
+player_list_all.append(Player("Connor", "Sarah", "01/02/1995", "FF00000"))
+player_list_all.append(Player("Jackson", "Peter", "01/06/1998", "CC00000"))
+player_list_all.append(Player("Tyson", "Mike", "01/07/1999", "DD00000"))
+player_list_all.append(Player("Balboa", "Rocky", "01/02/1995", "EE00000"))
+player_list_all.append(Player("Le Guin", "Ursula", "12/12/1212", "GG00000"))
 
 controller = Controller(Display())
 
@@ -174,63 +182,124 @@ def start_test():
     tournament.add_player(player_list_all[1])
     tournament.add_player(player_list_all[2])
     tournament.add_player(player_list_all[3])
-    tournament.add_round()
 
+    tournament.add_round()
     round_ = tournament.round_list[-1]
     for match in round_.match_list:
         match.winner = match.player_1
 
-    tournament.add_round()
+    print(tool.tournament_to_restart(tournament_list))
 
+    tournament.add_round()
     round_ = tournament.round_list[-1]
     for match in round_.match_list:
         match.winner = match.player_1
 
-    controller.get_round_resume(tournament, player_list_all)
+    print(tool.tournament_to_restart(tournament_list))
 
 
 def start_tournament():
+    # tournoi actif
+    tournament = Tournament("T01", "Le Grand échiquier", "Libreville","01/12/2025", "")
     choice = None
-    while choice != "99":
-        choice = controller.get_main_menu()
-        if choice == "1":
-            if tool.tournament_to_restart(tournament_list):
-                # on reprend le dernier tournoi de la liste
-                tournament = tournament_list[-1]
-            else:
-                tournament = Tournament("T01", "Le Grand échiquier", "Libreville","01/12/2025", "")
+    while choice != "11":
+        choice = controller.get_main_menu(tournament)
+        match choice:
+            # Créer un tournoi
+            case "1":
+                tournament = controller.get_tournament()
                 tournament_list.append(tournament)
+            # Saisir un nouveau joueur
+            case "2":
+                player = controller.get_new_player()
+                player_list_all.append(player)
+            # Activer un tournoi
+            case "3":
+                if not tool.tournament_to_activate(tournament_list):
+                    controller.get_information(1)
+                else:
+                    tournament = controller.get_tournament_choice(tournament_list)
+            # Inscrire un joueur
+            case "4":
+                check_inscriptin_open = tool.check_inscriptin_open(tournament, player_list_all)
+                if check_inscriptin_open != 0:
+                    controller.get_information(check_inscriptin_open)
+                else :
+                    player = controller.get_inscription(tournament, player_list_all)
+                    tournament.add_player(player)
+            # Démarrer un tour
+            case "5":
+                pass
+            # Saisir des résultats
+            case "6":
+                pass
+            # Résumé des tours
+            case "7":
+                pass
+            # Liste des joueus inscrits
+            case "8":
+                pass
+            # Liste tous les joueurs
+            case "9":
+                pass
+            # Lister tous les tournois
+            case "10":
+                pass
+            # Quitter
+            case "11":
+                pass
+    # choice = None
+    # while choice != "11":
+    #     choice = controller.get_main_menu()
+    #     match choice:
+    #         case "1":
+    #             if tool.tournament_to_restart(tournament_list):
+    #                 # on reprend le dernier tournoi de la liste
+    #                 tournament = tournament_list[-1]
+    #             else:
+    #                 tournament = controller.get_tournament()
+    #                 tournament_list.append(tournament)
+    #
+    #             if not tool.inscription_finished(tournament):
+    #                 choice = controller.get_menu_inscription(tournament, player_list_all)
+    #                 while choice != "2":
+    #                     match choice:
+    #                         case "1":
+    #                             player = controller.get_inscription(tournament, player_list_all)
+    #                             tournament.add_player(player)
+    #                             choice = controller.get_menu_inscription(tournament, player_list_all)
+    #                         case "2":
+    #                             pass
+    #                         case "3":
+    #                             controller.get_player_register(player_list_all, tournament)
+    #                             choice = controller.get_menu_inscription(tournament, player_list_all)
+    #                         case "4":
+    #                             controller.get_player_other(player_list_all, tournament)
+    #                             choice = controller.get_menu_inscription(tournament, player_list_all)
+    #                         case "0":
+    #                             break
+    #
+    #             if not tool.round_in_progress(tournament) and choice != '0':
+    #                 tournament.add_round()
+    #
+    #             while tool.round_in_progress(tournament) and choice != '0':
+    #                 choice = controller.get_menu_round(tournament, player_list_all)
+    #                 match choice:
+    #                     case "1":
+    #                         controller.get_enter_result(tournament, player_list_all)
+    #                     case "2":
+    #                         controller.get_round_resume(tournament, player_list_all)
+    #             #  il faut calculer les scores
+    #         case "2":
+    #             player = controller.get_new_player()
+    #             player_list_all.append(player)
+    #
+    #         case "3":
+    #             controller.get_player_full(player_list_all)
+    #
+    #         case "4":
+    #             controller.get_tournament_full(tournament_list)
 
-            if not tool.inscription_finished(tournament):
-                choice = controller.get_menu_inscription(tournament, player_list_all)
-                while choice != "2":
-                    match choice:
-                        case "1":
-                            player = controller.get_inscription(tournament, player_list_all)
-                            tournament.add_player(player)
-                            choice = controller.get_menu_inscription(tournament, player_list_all)
-                        case "2":
-                            pass
-                        case "3":
-                            controller.get_player_register(player_list_all, tournament)
-                            choice = controller.get_menu_inscription(tournament, player_list_all)
-                        case "4":
-                            controller.get_player_other(player_list_all, tournament)
-                            choice = controller.get_menu_inscription(tournament, player_list_all)
-                        case "0":
-                            break
 
-            if not tool.round_in_progress(tournament) and choice != '0':
-                tournament.add_round()
-
-            while tool.round_in_progress(tournament) and choice != '0':
-                choice = controller.get_menu_round(tournament, player_list_all)
-                match choice:
-                    case "1":
-                        controller.get_enter_result(tournament, player_list_all)
-                    case "2":
-                        break
-
-
-# start_tournament()
-start_test()
+start_tournament()
+# start_test()

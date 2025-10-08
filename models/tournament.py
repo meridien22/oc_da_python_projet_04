@@ -1,4 +1,5 @@
 import random
+import os
 from .match import Match
 from .player import Player
 from .round import Round
@@ -9,7 +10,7 @@ class Tournament:
     Classe qui permet de gérer un tournoi d'échec.
     """
     # Nombre de tours par défaut du tournoi
-    DEFAULT_NUMBER_ROUND = 4
+    DEFAULT_NUMBER_ROUND = 2
     # Score par défaut d'un joueur en début de tournoi
     SCORE_BASE = 0
     # Score d'un joueur qui gagne
@@ -22,19 +23,16 @@ class Tournament:
     def __init__(self, id, name, place, date_start, description):
         self.id = id
         self.name = name
-        self.place = place
+        self.location = place
         self.date_start = date_start
         self.player_list = []
         self.id_national_list = []
         self.round_list = []
         self.description = description
-        # liste qui stocke tous les identifiants des matchs
-        # pour être sûr de ne pas rejouer un match
-        self.id_matchs = []
         self.round_number = self.DEFAULT_NUMBER_ROUND
 
     def __str__(self):
-        return f"Tournoi {self.name} du {self.date_start} à {self.place}"
+        return f"Tournoi {self.name} du {self.date_start} à {self.location}"
 
     def add_player(self, player):
         self.player_list.append({
@@ -45,7 +43,7 @@ class Tournament:
         self.id_national_list.append(player.id_national)
 
     def add_round(self):
-        # si il exsite un tour on le finit
+        # s'il exsite un tour on le finit
         if len(self.round_list) > 0:
             roud_last = self.round_list[-1]
             roud_last.finish()

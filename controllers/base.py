@@ -8,70 +8,25 @@ from models import *
 class Controller:
 
     # séquence de caractère à taper dans la recherche pour obtenir tous les jouers
-    FIND_ALL = "***"
+    FIND_ALL = "*"
 
     def __init__(self, display):
         self.display = display
         self.tool = Tool()
 
-    # def get_menu_choice(self, id_menu):
-    #     self.display.configure(display_parameters[id_menu])
-    #     return self.display.get_input_choice()
-    #
-    # def get_menu_input(self, id_menu):
-    #     self.display.configure(display_parameters[id_menu])
-    #     return self.display.get_input()
-    #
-    # def get_confirmation(self):
-    #     self.display.configure(display_parameters["50"])
-    #     return self.display.get_confirmation()
-    #
-    # def get_list_tournament(self, tournament_liste):
-    #     parameter = display_parameters["20"]
-    #     action_dict = {}
-    #
-    #     for index, tournament in enumerate(tournament_liste):
-    #         action_dict[str(index + 1)] = tournament.name
-    #
-    #     parameter["actions"] = action_dict
-    #     self.display.configure(parameter)
-    #     return self.display.get_input_choice()
-    #
-    # def get_list_player(self, player_list_hint, player_list_all):
-    #     parameter = display_parameters["41"]
-    #     action_dict = {}
-    #
-    #     for index, player in enumerate(player_list_all):
-    #         if player in player_list_hint:
-    #             action_dict[str(index + 1)] = player.name
-    #
-    #     parameter["actions"] = action_dict
-    #     self.display.configure(parameter)
-    #     return self.display.get_input_choice()
-    #
-    # def get_list_round_match(self, tournament_active):
-    #     parameter = display_parameters["100"]
-    #     parameter["content"] = tournament_active.get_rounds_matchs()
-    #     self.display.configure(parameter)
-    #     return self.display.get_input()
+    def get_main_menu(self, tournament):
+        menu = MenuMain()
+        return menu.execute(tournament)
 
-    def get_main_menu(self):
-        actions = {
-            "1": "Créer ou reprendre un tournoi",
-            "2": "Saisir un nouveau joueur",
-            "3": "Lister tous les joueurs",
-            "4": "Lister tous les tournois",
-            "99": "Quitter"
-        }
-        self.display.clear()
-        self.display.set_title("CHESS MASTER PRO ULTIMATE")
-        self.display.set_actions(actions)
-        self.display.prompt = "Entrez le numéro de votre choix : "
-        return self.display.get_input_choice()
+    def get_information(selfself, code):
+        menu = InformationUser()
+        menu.execute(code)
 
     def get_menu_inscription(self, tournament, player_list):
         action_dict = {}
         len_ = len(tournament.player_list)
+        registration = False
+        close = False
 
         # si le nombre de joueurs inscrits est pair, il faut qu'il reste au moins
         # 2 joueurs de disponible car sinon on tombe sur un nombre de joueurs
@@ -82,30 +37,44 @@ class Controller:
                 if player["id_national"] in tournament.id_national_list:
                     number_player_available -= 1
             if number_player_available >= 2:
-                action_dict["1"] = "Inscrire un joueur"
+                registration = True
         else:
-            action_dict["1"] = "Inscrire un joueur"
+            registration = True
 
-        # s'il y a des joueurs inscrits en nombre pair, clôture possible
-        if len_> 0 and len_ % 2 == 0:
-            action_dict["2"] = "Clôturer les inscriptions"
+        # s'il y a des joueurs inscrits en nombre pair,
+        # et si nombre de joueurs >= 2 x le nombre de tours
+        # alors clôture possible
+        if len_ > 0 and len_ % 2 == 0 and len_ >= tournament.DEFAULT_NUMBER_ROUND * 2:
+            close = True
 
-        action_dict["3"] = "Liste des joueurs inscrits"
-        action_dict["4"] = "Liste des autres joueurs"
-        action_dict["0"] = "Retour au menu principal"
+        menu = MenuInscription()
+        return menu.execute(registration, close, tournament.name)
 
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} : MENU INSCRIPTION")
-        self.display.set_actions(action_dict)
-        self.display.prompt = "Entrez le numéro de votre choix : "
-        return self.display.get_input_choice()
+    def get_tournament(self):
+        tournament_id = self.tool.get_national_id()
+        menu = MenuTournament()
+        value_dict = menu.execute()
+        return Tournament(tournament_id,
+                          value_dict["name"],
+                          value_dict["location"],
+                          "", "")
+
+    def get_tournament_choice(self, tournament_list):
+        tournamet_display = []
+        for tournament in tournament_list:
+            tournamet_display.append(tournament)
+        menu = MenuTournamentChoice()
+        return menu.execute(tournamet_display)
+
+    def get_new_player(self):
+        player_id_national = self.tool.get_national_id()
+        menu = MenuNewPlayer()
+        value_dict = menu.execute()
+        return Player(value_dict["name"], value_dict["fist_name"], "", player_id_national)
 
     def get_inscription(self, tournament, player_list):
-        self.display.min_character = 3
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} : INSCRIPTION - RECHERCHE")
-        self.display.prompt = "Entrez le nom ou une partie du nom du jouer (tapez *** pour lister tout les joueurs) : "
-        hint = self.display.get_input()
+        menu = MenuHint()
+        hint = menu.execute(tournament.name)
 
         player_filter_inscription_list = []
         # on contrôle d'abord que le joueur ne soit pas déjà inscrit
@@ -125,17 +94,12 @@ class Controller:
         else:
             player_filter_hint_list = player_filter_inscription_list
 
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} : INSCRIPTION - JOUEUR")
-        action_dict = {}
-        # on crée le menu
-        for index, player in enumerate(player_filter_hint_list):
-            action_dict[str(index + 1)] = player.name
-        self.display.set_actions(action_dict)
-        self.display.prompt = "Entrez le joueur de votre choix : "
-        choice = self.display.get_input_choice()
+        # si la recherche ne renvoie aucun résultat, on renvoie la premmière liste filtrée
+        if len(player_filter_hint_list) == 0:
+            player_filter_hint_list = player_filter_inscription_list
 
-        return  player_filter_hint_list[int(choice) - 1]
+        menu = MenuInscriptionPlayer()
+        return  player_filter_hint_list[menu.execute(tournament.name, player_filter_hint_list)]
 
     def get_player_register(self, player_list, tournament):
         player_display_list = []
@@ -144,12 +108,8 @@ class Controller:
             row = [player.first_name, player.name, player.date_birth, player.id_national]
             player_display_list.append(row)
 
-        self.display.clear()
-        self.display.min_character = 0
-        self.display.set_title(f"{tournament.name} : JOUEURS INSCRITS")
-        self.display.set_content(player_display_list)
-        self.display.prompt = "Tapez sur une touche pour continuer."
-        return self.display.get_input()
+        menu = MenuPlayerRegister()
+        return menu.execute(tournament.name, player_display_list)
 
     def get_player_other(self, player_list, tournament):
         player_display_list = []
@@ -158,25 +118,34 @@ class Controller:
                 row = [player.first_name, player.name, player.date_birth, player.id_national]
                 player_display_list.append(row)
 
-        self.display.clear()
-        self.display.min_character = 0
-        self.display.set_title(f"{tournament.name} : JOUEURS DISPONIBLES")
-        self.display.set_content(player_display_list)
-        self.display.prompt = "Tapez sur une touche pour continuer."
-        return self.display.get_input()
+        menu = MenuPlayerOther()
+        return menu.execute(tournament.name, player_display_list)
+
+    def get_player_full(self, player_list):
+        player_display_list = []
+        for player in player_list:
+            row = [player.first_name, player.name, player.date_birth, player.id_national]
+            player_display_list.append(row)
+
+        menu = MenuPlayerFull()
+        return menu.execute(player_display_list)
+
+    def get_tournament_full(self, tournament_list):
+        tournament_display_list = []
+        for tournament in tournament_list:
+            round_number = len(tournament.round_list)
+            player_number = len(tournament.player_list)
+            row = [tournament.name, tournament.place, round_number, player_number]
+            tournament_display_list.append(row)
+
+        menu = MenuTournamentFull()
+        return menu.execute(tournament_display_list)
 
     def get_menu_round(self, tournament, player_list):
         round_ = tournament.round_list[-1]
-        actions = {
-            "1": "Saisir les résultats",
-            "2": "Résumé des tours",
-            "0": "Retour au menu principal"
-        }
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} {round_.name}")
-        self.display.set_actions(actions)
-        self.display.prompt = "Entrez le numéro de votre choix : "
-        return self.display.get_input_choice()
+
+        menu = MenuRound()
+        return menu.execute(tournament.name, round_.name)
 
     def get_enter_result(self, tournament, player_list):
         round_ = tournament.round_list[-1]
@@ -189,16 +158,10 @@ class Controller:
         for index, match in enumerate(match_for_result_list):
             player_1 = self.tool.get_player_from_id(player_list, match.player_1)
             player_2 = self.tool.get_player_from_id(player_list, match.player_2)
-            player_1 = player_1
-            player_2 = player_2
-            action_dict[str(index + 1)] = player_1 + " contre " + player_2
+            action_dict[str(index + 1)] = str(player_1) + " contre " + str(player_2)
 
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} - {round_.name} - SAISIE DES RESULTATS 1/2")
-        self.display.set_actions(action_dict)
-        self.display.prompt = "Sélectionnez un match à encoder : "
-        choice = self.display.get_input_choice()
-        match_index = int(choice) - 1
+        menu = MenuEnterResult()
+        match_index = menu.execute(action_dict, tournament.name, round_.name)
         match = match_for_result_list[match_index]
 
         action_dict = {}
@@ -207,11 +170,9 @@ class Controller:
         action_dict["1"] = player_1
         action_dict["2"] = player_2
         action_dict["3"] = "Match nul"
-        self.display.clear()
-        self.display.set_title(f"{tournament.name} - {round_.name} - SAISIE DES RESULTATS 2/2")
-        self.display.set_actions(action_dict)
-        self.display.prompt = "Sélectionnez un vainqueur ou un match nul : "
-        choice = self.display.get_input_choice()
+
+        menu = MenuEnterMacthResult()
+        choice = menu.execute(action_dict, tournament.name, round_.name)
 
         match choice:
             case "1":
@@ -236,28 +197,10 @@ class Controller:
             row = [player_1, player_2, winner]
             match_display.append(row)
 
-        self.display.clear()
-        self.display.min_character = 0
-        self.display.set_title(f"{tournament.name} : RESUME DES TOURS")
-        header_list = ["Nom", "Début", "Fin", "Nombre match"]
-        self.display.set_content(round_display_list, header_list)
-        self.display.set_message(f"Détail du {roud_last.name}")
-        header_list = ["Joueur 1", "Joueur 2", "Gagnant"]
-        self.display.set_content(match_display, header_list)
-        self.display.prompt = "Tapez sur une touche pour continuer."
-        return self.display.get_input()
-
+        menu = MenuRoundREsume()
+        return menu.execute(tournament.name, roud_last.name, round_display_list, match_display)
 
 class Tool:
-
-    # Aucun tournoi n'est commencé.
-    TOURNAMENT_NOT_STARTING = 0
-    # Un tournoi est commencé sans aucun joueur.
-    TOURNAMENT_STARTING_WITHOUT_PLAYER = 1
-    # Un tournoi et un tour avec des joueurs
-    ROUND_STARTING_WITH_PLAYER = 2
-    # Un tournoi et un tour sont commencé
-    ROUND_STARTING = 3
 
     def set_tile(self, id_menu, title):
         display_parameters[id_menu]["title"] = title
@@ -286,23 +229,9 @@ class Tool:
         else:
             return player_hint
 
-    def get_tournament_statement(self, tournament, round_):
-        if tournament is None :
-            return self.TOURNAMENT_NOT_STARTING
-        elif tournament is not None and round_ is None:
-            return self.TOURNAMENT_STARTING
-        elif tournament is not None and round_ is not None:
-            return self.ROUND_STARTING
-        else:
-            return None
-
-    def tournament_to_restart(self, tournament_list):
+    def tournament_to_activate(self, tournament_list):
         if len(tournament_list) > 0:
-            tournament = tournament_list[-1]
-            if self.all_rounf_played(tournament):
-                return False
-            else:
-                return True
+            return True
         else:
             return False
 
@@ -321,12 +250,21 @@ class Tool:
                     in_progress = True
         return in_progress
 
+    def check_inscriptin_open(self, tournament, player_list_all):
+            if tournament is None:
+                return 2
+            if len(tournament.round_list) > 0:
+                return 3
+            if len(tournament.player_list) == len(player_list_all):
+                return 4
+            return 0
+
     def all_rounf_played(self, tournament):
-        if len(tournament.round_list) >= tournament.DEFAULT_NUMBER_ROUND:
-            if not self.round_in_progress:
-                return True
-            else:
+        if len(tournament.round_list) == tournament.DEFAULT_NUMBER_ROUND:
+            if self.round_in_progress(tournament):
                 return False
+            else:
+                return True
         else:
             return False
 
