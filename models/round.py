@@ -13,9 +13,6 @@ class Round:
         round_number = len(round_list) + 1
         return f"Tour {round_number}"
 
-    def __str__(self):
-        return f"{self.date_time_start}"
-
     def get_date_time(self):
         """Retourne la date du jour avec les heures et les minutes"""
         return datetime.datetime.now().strftime("%d/%m/%Y à %Hh%M")

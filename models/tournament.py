@@ -1,5 +1,4 @@
 import random
-import os
 from .match import Match
 from .player import Player
 from .round import Round
@@ -69,15 +68,6 @@ class Tournament:
         for player_tournament in self.player_list:
             if player_tournament["id_national"] == player.id_national:
                 player_tournament["score"] += point
-
-
-    def get_rounds_matchs(self):
-        """Retourne les rounds du tournoi"""
-        round_list = []
-        for index, round_ in enumerate(self.round_list):
-            round_list.append(f"Tour {index + 1} débuté à {str(round_)}")
-            round_list.append(round_.get_match_resume())
-        return round_list
 
     def get_match(self):
         """" Renvoi les matches d'un tour
