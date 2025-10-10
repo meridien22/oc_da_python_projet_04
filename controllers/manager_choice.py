@@ -3,7 +3,7 @@ from views.display_text import *
 from .manager_tool import *
 
 
-class MangerChoice:
+class ManagerChoice:
 
     FIND_ALL = "*"
 
@@ -33,13 +33,13 @@ class MangerChoice:
         player_filter_list = []
         # on contrôle d'abord que le joueur ne soit pas déjà inscrit
         for player in player_list:
-            if player.id_national not in tournament.id_national_list:
+            if player.id_national not in self.manager_tool.get_list_id_national(tournament):
                 player_filter_list.append(player)
 
         # on fait une recherche dans le nom et dans le prénom si demandé
         player_filter_hint_list = []
         if hint != self.FIND_ALL:
-            player_filter_hint_list = self.tool.get_player_from_hint(hint, player_filter_list)
+            player_filter_hint_list = self.manager_tool.get_player_from_hint(hint, player_filter_list)
         else:
             player_filter_hint_list = player_filter_list
 
@@ -113,9 +113,9 @@ class MangerChoice:
             player_2 = self.manager_tool.get_player_from_id(player_list, match.player_2)
             action_dict[str(index + 1)] = str(player_1) + " contre " + str(player_2)
 
-        choice = MenuEnterResult()
-        menu = int(choice) - 1
+        menu = MenuEnterResult()
         match_index = menu.execute(action_dict, tournament.name, round_.name)
+        match_index = int(match_index) - 1
         match = match_for_result_list[match_index]
 
         action_dict = {}
@@ -135,3 +135,5 @@ class MangerChoice:
                 match.winner = player_2.id_national
             case "3":
                 match.winner = 0
+
+        tournament.calculate_score(match)

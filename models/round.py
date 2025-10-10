@@ -9,6 +9,14 @@ class Round:
         self.match_list = match_list
         self.name = self.get_name(round_list)
 
+    def to_dict(self):
+        return {
+            "date_time_start": self.date_time_start,
+            "date_time_end": self.date_time_end,
+            "match_list": [match.to_dict() for match in self.match_list],
+            "name": self.name
+        }
+
     def get_name(self, round_list):
         round_number = len(round_list) + 1
         return f"Tour {round_number}"

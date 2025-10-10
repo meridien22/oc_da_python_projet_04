@@ -15,7 +15,8 @@ class MenuMain(DisplayTool):
             "8": "Liste des joueus inscrits",
             "9": "Liste tous les joueurs",
             "10": "Lister tous les tournois",
-            "11": "Quitter"
+            "11": "Classement du tournoi",
+            "12": "Quitter"
         }
         self.clear()
         if tournament is None:

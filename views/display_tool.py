@@ -100,7 +100,7 @@ class InformationUser(DisplayTool):
             "3": "Les inscriptions sont closes pour ce tournoi.",
             "4": "Il n'y a plus de joueur disponible pour l'inscription.",
             "5": "Vous devez d'abord finir le tour en cours avant d'en commencer un nouveau.",
-            "6": (f"Le tournoi comporte déjà {parameter} tours qui est le nombre "
+            "6": (f"Le tournoi comporte déjà {parameter} tours ce qui est le nombre "
                   f"de tour total du tournoi."),
             "7": "Il n'y a pas assez de joueurs disponible pour commencer l'inscription",
             "8": "La création du premier tour va clôturer définitivement les inscriptions.",
@@ -108,6 +108,8 @@ class InformationUser(DisplayTool):
             "10": "Il n'y a aucun joueur inscrit dans ce tournoi.",
             "11": "Il n'est plus possible d'inscrire des jouers dans ce tournoi.",
             "12": "Ce tournoi ce comporte pas encore de tour.",
-            "13": "Il n'y a aucun résultat à saisir dans ce tournoi."
+            "13": "Il n'y a aucun résultat à saisir dans ce tournoi.",
+            "14": "Le tournoi est terminé, vous pouvez consulter le classement.",
+            "15": "Vous devez inscrire un joueur supplémentaire avent de démmarrer le tournoi."
         }
         return message_dict[code]

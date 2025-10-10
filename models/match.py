@@ -15,6 +15,12 @@ class Match:
                 f"{self.player_2} : "
                 f"Gagnant => {self.winner}")
 
+    def to_dict(self):
+        return {
+            "player_1": self.player_1,
+            "player_2": self.player_2,
+            "winner": self.winner
+        }
 
     def get_winner(self):
         """Retourne le gagnant aleatoire du match

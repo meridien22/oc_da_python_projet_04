@@ -2,14 +2,14 @@ from views.display_content import *
 from .manager_tool import *
 
 
-class MangerContent:
+class ManagerContent:
     def __init__(self, display):
         self.manager_tool = ManagerTool()
 
     def get_player_register(self, player_list, tournament):
         """Affiche la liste des joueurs inscrits"""
         player_display_list = []
-        for player_id_national in tournament.id_national_list:
+        for player_id_national in self.manager_tool.get_list_id_national(tournament):
             player = self.manager_tool.get_player_from_id(player_list, player_id_national)
             row = [player.first_name, player.name, player.date_birth, player.id_national]
             player_display_list.append(row)
@@ -67,3 +67,19 @@ class MangerContent:
 
         menu = MenuRoundREsume()
         return menu.execute(tournament.name, roud_last.name, round_display_list, match_display)
+
+    def get_ranking(self, tournament, player_list):
+        """Donne le classement d'un tournoi"""
+        player_tri = sorted(tournament.player_list, key=lambda element: element["score"], reverse = True)
+        player_display_list = []
+        header_list = ["Joueurs", "Score"]
+        title = "Classement général"
+        for player in player_tri:
+            id_national = player["id_national"]
+            score = player["score"]
+            player = self.manager_tool.get_player_from_id(player_list, id_national)
+            row = [player, score]
+            player_display_list.append(row)
+
+        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 10)
+

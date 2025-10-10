@@ -1,8 +1,11 @@
 from views.display_text import *
+from .manager_tool import *
 from models import *
 
 
-class MangerText:
+class ManagerText:
+    def __init__(self, display):
+        self.manager_tool = ManagerTool()
 
     def get_confirmation(self, message):
         """Demande à l'utilisateur de confirmer et renvoi True ou False"""
@@ -11,7 +14,7 @@ class MangerText:
 
     def get_tournament(self):
         """Renvoi un nouveau tournoi"""
-        tournament_id = self.tool.get_national_id()
+        tournament_id = self.manager_tool.get_national_id()
         menu = MenuTournament()
         value_dict = menu.execute()
         return Tournament(tournament_id,
@@ -21,7 +24,7 @@ class MangerText:
 
     def get_new_player(self):
         """Renvoi un nouveau joueur"""
-        player_id_national = self.tool.get_national_id()
+        player_id_national = self.manager_tool.get_national_id()
         menu = MenuNewPlayer()
         value_dict = menu.execute()
         return Player(value_dict["name"], value_dict["fist_name"], "", player_id_national)
