@@ -3,7 +3,7 @@ from .display_tool import *
 
 class MenuMain(DisplayTool):
     """Renvoi le choix de l'utilisateur dans le menu principal"""
-    def execute(self, tournament):
+    def execute(self, tournament = None):
         actions = {
             "1": "Créer un tournoi",
             "2": "Saisir un nouveau joueur",

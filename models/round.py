@@ -1,29 +1,43 @@
 import datetime
-
+from .match import Match
 
 class Round:
-    """Créer un tour pour un tournoi d'échec"""
-    def __init__(self, round_list,  match_list):
-        self.date_time_start = self.get_date_time()
-        self.date_time_end = None
-        self.match_list = match_list
-        self.name = self.get_name(round_list)
+    """Créer un tour pour unmanager_tool tournoi d'échec"""
+
+    def __init__(self,
+                 name,
+                 match_list=None,
+                 date_time_start=None,
+                 date_time_end=None):
+
+        self.name = name
+        if date_time_start is None:
+            self.date_time_start = self.get_date_time()
+        else:
+            self.date_time_start = date_time_start
+        self.date_time_end = date_time_end
+        if isinstance(match_list, list):
+            self.match_list = match_list
+        else:
+            self.match_list = []
 
     def to_dict(self):
+        """Retourne un tour sous la forme d'une chaine de caratère json"""
         return {
-            "date_time_start": self.date_time_start,
-            "date_time_end": self.date_time_end,
+            "name": self.name,
             "match_list": [match.to_dict() for match in self.match_list],
-            "name": self.name
+            "date_time_start": self.date_time_start,
+            "date_time_end": self.date_time_end
         }
 
-    def get_name(self, round_list):
-        round_number = len(round_list) + 1
-        return f"Tour {round_number}"
-
-    def get_date_time(self):
-        """Retourne la date du jour avec les heures et les minutes"""
-        return datetime.datetime.now().strftime("%d/%m/%Y à %Hh%M")
+    @classmethod
+    def from_dict(cls, data):
+        """Construit un round à partir d'une chaine de caractère json"""
+        return Round(data["name"],
+                     [Match.from_dict(match_data) for match_data in data["match_list"]],
+                     data["date_time_start"],
+                     data["date_time_end"]
+                     )
 
     def finish(self):
         self.date_time_end = self.get_date_time()
@@ -46,3 +60,7 @@ class Round:
             if match.winner is None:
                 finished = False
         return finished
+
+    def get_date_time(self):
+        """Retourne la date du jour avec les heures et les minutes"""
+        return datetime.datetime.now().strftime("%d/%m/%Y à %Hh%M")

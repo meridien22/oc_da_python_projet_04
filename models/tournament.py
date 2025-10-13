@@ -1,6 +1,5 @@
-import random
-from .match import Match
-from .player import Player
+import uuid
+import datetime
 from .round import Round
 
 
@@ -19,15 +18,30 @@ class Tournament:
     # Score pour un match nul
     SCORE_DRAW = 0.5
 
-    def __init__(self, id, name, location, date_start, description):
-        self.id = id
+    def __init__(self, name, location, date_start,
+                 description, round_number = DEFAULT_NUMBER_ROUND,
+                 id = None, player_list = None, round_list = None):
+        if id is None:
+            # on convertit l'uuid en chaîne car ce n'est pas possible de serialiser un tel objet
+            self.id = str(uuid.uuid4())
+        else:
+            self.id = id
         self.name = name
         self.location = location
-        self.date_start = date_start
-        self.player_list = []
-        self.round_list = []
+        if date_start is None:
+            self.date_start = datetime.datetime.now().strftime("%d/%m/%Y")
+        else:
+            self.date_start = date_start
         self.description = description
-        self.round_number = self.DEFAULT_NUMBER_ROUND
+        self.round_number = round_number
+        if player_list is None:
+            self.player_list = []
+        else:
+            self.player_list = player_list
+        if round_list is None:
+            self.round_list = []
+        else:
+            self.round_list = round_list
 
 
     def to_dict(self):
@@ -37,9 +51,23 @@ class Tournament:
             "location" : self.location,
             "date_start" : self.date_start,
             "description" : self.description,
+            "round_number" : self.round_number,
             "player_list" : self.player_list,
             "round_list" : [round_.to_dict() for round_ in self.round_list]
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            data["name"],
+            data["location"],
+            data["date_start"],
+            data["description"],
+            data["round_number"],
+            data["id"],
+            data["player_list"],
+            [Round.from_dict(round_data) for round_data in data["round_list"]]
+        )
 
     def __str__(self):
         return f"Tournoi {self.name} du {self.date_start} à {self.location}"

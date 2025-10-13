@@ -17,14 +17,18 @@ class ManagerText:
         tournament_id = self.manager_tool.get_national_id()
         menu = MenuTournament()
         value_dict = menu.execute()
-        return Tournament(tournament_id,
-                          value_dict["name"],
+        return Tournament(value_dict["name"],
                           value_dict["location"],
-                          "", "")
+                          None,
+                          value_dict["description"],
+                          value_dict["number_round"])
 
     def get_new_player(self):
         """Renvoi un nouveau joueur"""
         player_id_national = self.manager_tool.get_national_id()
         menu = MenuNewPlayer()
         value_dict = menu.execute()
-        return Player(value_dict["name"], value_dict["fist_name"], "", player_id_national)
+        return Player(value_dict["name"],
+                      value_dict["fist_name"],
+                      value_dict["date_birth"],
+                      player_id_national)

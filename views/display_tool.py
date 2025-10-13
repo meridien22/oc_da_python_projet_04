@@ -110,6 +110,7 @@ class InformationUser(DisplayTool):
             "12": "Ce tournoi ce comporte pas encore de tour.",
             "13": "Il n'y a aucun résultat à saisir dans ce tournoi.",
             "14": "Le tournoi est terminé, vous pouvez consulter le classement.",
-            "15": "Vous devez inscrire un joueur supplémentaire avent de démmarrer le tournoi."
+            "15": "Vous devez inscrire un joueur supplémentaire avent de démmarrer le tournoi.",
+            "16": "Le tour est maintenant terminé."
         }
         return message_dict[code]

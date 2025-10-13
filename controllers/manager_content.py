@@ -26,7 +26,7 @@ class ManagerContent:
             row = [player.first_name, player.name, player.date_birth, player.id_national]
             player_display_list.append(row)
 
-        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 10)
+        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 15)
 
 
     def get_tournament_full(self, tournament_list):

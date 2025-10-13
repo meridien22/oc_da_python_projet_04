@@ -1,16 +1,26 @@
+import os
 import random
-import datetime
 import re
+import datetime
+import json
 from views.display_choice import *
 from models import *
 
 
 class ManagerTool:
 
+    # Répertoire où seront enregistrés les tournois
+    DIRECTORY_TOURNAMENT = "data\\tournament"
+    # Répertoire où seront enregistrés les joueurs
+    JSON_PLAYER = "data\\players.jsonl"
+
     def get_information(self, code, parameter=None):
         """Lance l'affichage d'un message avec un contenu précis"""
         menu = InformationUser()
         menu.execute(code, parameter)
+
+    def get_message(self, code):
+        return InformationUser.get_message(code)
 
     def get_list_paginated(self, title, header_list, list_, number_per_page):
         """Permet d'afficher une longue liste en plusieurs pages"""
@@ -229,15 +239,43 @@ class ManagerTool:
                     player_tournament["opponent_list"].append(match.player_1)
 
     def add_round(self, tournament):
-        # s'il exsite un tour on le finit
-        if len(tournament.round_list) > 0:
-            roud_last = tournament.round_list[-1]
-            roud_last.finish()
-
         match_list = self.get_match(tournament)
-        round_ = Round(tournament.round_list, match_list)
+        round_name = self.get_name_next_round(tournament)
+        round_ = Round(round_name, match_list)
         tournament.round_list.append(round_)
+        print("toto")
 
     def is_max_round(self, tournament):
         """Retourne True si le nombre maximum de tours du tournoi a été atteint"""
         return len(tournament.round_list) == tournament.round_number
+
+    def get_name_next_round(self, tournament):
+        round_number = len(tournament.round_list) + 1
+        return f"Tour {round_number}"
+
+    def save_tournamen(self, tournament):
+        dump_str = tournament.to_dict()
+        json_file = os.path.join(self.DIRECTORY_TOURNAMENT, f"{tournament.id}.json")
+        with open(json_file, "w", encoding='utf-8') as f:
+            json.dump(dump_str, f, ensure_ascii=False, indent=4)
+
+    def load_all_tournament(self, tournament_list):
+        directory_list = os.listdir(self.DIRECTORY_TOURNAMENT)
+        for element in directory_list:
+            path_element = os.path.join(self.DIRECTORY_TOURNAMENT, element)
+            if os.path.isfile(path_element):
+                with open(path_element, 'r', encoding='utf-8') as file:
+                    json_str = json.load(file)
+                    tournament_list.append(Tournament.from_dict(json_str))
+
+    def save_all_player(self, player_list):
+        with open(self.JSON_PLAYER, 'w', encoding='utf-8') as file:
+            for player in player_list:
+                json_line = json.dumps(player.to_dict(), ensure_ascii=False)
+                file.write(json_line + '\n')
+
+    def load_player(self, player_list):
+        with open(self.JSON_PLAYER, 'r', encoding='utf-8') as file:
+            for line in file:
+                json_str = json.loads(line)
+                player_list.append(Player.from_dict(json_str))

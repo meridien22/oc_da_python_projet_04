@@ -10,7 +10,7 @@ class ManagerChoice:
     def __init__(self, display):
         self.manager_tool = ManagerTool()
 
-    def get_main_menu(self, tournament):
+    def get_main_menu(self, tournament = None):
         """Renvoi le choix de l'utilisateur dans le menu principal"""
         menu = MenuMain()
         return menu.execute(tournament)
@@ -50,7 +50,7 @@ class ManagerChoice:
         # on gère maintenant l'affichage des résultats par page
 
         # Nombre d'éléments que le veut afficher par page
-        number_player_display = 3
+        number_player_display = 15
         # Index de départ de la liste pour la page en cours
         index_start = 0
         # Index de fin de la liste pour la page en cours
@@ -137,3 +137,8 @@ class ManagerChoice:
                 match.winner = 0
 
         tournament.calculate_score(match)
+
+        # si le tour est terminé, on met à jour la date de fin
+        if not self.manager_tool.round_in_progress(tournament):
+            round_.finish()
+            self.manager_tool.get_information("16")

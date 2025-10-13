@@ -13,3 +13,18 @@ class Player:
     def __repr__(self):
         return str(self)
 
+    @classmethod
+    def from_dict(cls, data):
+        return Player(data["name"],
+                     data["first_name"],
+                     data["date_birth"],
+                     data["id_national"])
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "first_name": self.first_name,
+            "date_birth": self.date_birth,
+            "id_national": self.id_national
+        }
+
