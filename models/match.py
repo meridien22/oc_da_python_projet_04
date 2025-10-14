@@ -2,26 +2,28 @@ import random
 
 
 class Match:
+    """Crée un match entre 2 joueurs"""
 
-    def __init__(self, player_1_id_national, player_2_id_national, winner = None):
-        """Initialise un match entre 2 joueurs avec un score de 0"""
+    def __init__(self, player_1_id_national, player_2_id_national, winner=None):
         self.player_1 = player_1_id_national
         self.player_2 = player_2_id_national
         self.winner = None
 
     def __str__(self):
-        return (f"{self.player_1 } "
+        return (f"{self.player_1} "
                 f"contre "
                 f"{self.player_2} : "
                 f"Gagnant => {self.winner}")
 
     @classmethod
     def from_dict(cls, data):
+        """Renvoi un match sous forme de liste"""
         return Match(data["player_1_id_national"],
                      data["player_2_id_national"],
                      data["winner"])
 
     def to_dict(self):
+        """Créer un objet Match à partir d'une liste"""
         return {
             "player_1_id_national": self.player_1,
             "player_2_id_national": self.player_2,

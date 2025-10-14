@@ -1,10 +1,10 @@
-import os
 import random
 import re
 import datetime
+import os
 import json
-from views.display_choice import *
-from models import *
+from views import InformationUser, MenuListPaginated
+from models import Tournament, Match, Player, Round
 
 
 class ManagerTool:
@@ -20,9 +20,10 @@ class ManagerTool:
         menu.execute(code, parameter)
 
     def get_message(self, code):
+        """Affiche le message qui correspond au code"""
         return InformationUser.get_message(code)
 
-    def get_list_paginated(self, title, header_list, list_, number_per_page):
+    def get_list_paginated(self, title, header_list, list_, number_per_page, clear=True):
         """Permet d'afficher une longue liste en plusieurs pages"""
         # Index de départ de la liste pour la page en cours
         index_start = 0
@@ -47,7 +48,7 @@ class ManagerTool:
             index_end = index_start + number_per_page
             list_extract = list_[index_start:index_end]
             menu = MenuListPaginated()
-            choice = menu.execute(title, header_list, list_extract, page, page_full)
+            choice = menu.execute(title, header_list, list_extract, page, page_full, clear)
             # Si le choix est "s" on va à la page suivante
             if choice == "s":
                 index_start += number_per_page
@@ -62,12 +63,14 @@ class ManagerTool:
                 break
 
     def get_player_from_id(self, player_list, id_national):
+        """Retourne un objet Player à partir d'un ID national"""
         for player in player_list:
             if player.id_national == id_national:
                 return player
         return None
 
     def get_national_id(self):
+        """Génère aléatoirement un ID national"""
         letter_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
         random.shuffle(letter_list)
         letter_1 = letter_list[0]
@@ -76,6 +79,7 @@ class ManagerTool:
         return letter_1 + lettre_2 + number
 
     def get_player_from_hint(self, hint, player_list):
+        """Retourne une liste de joueur correspondant au critère de recherche"""
         hint = re.escape(hint)
         player_filter_hint_list = []
         for player in player_list:
@@ -88,6 +92,7 @@ class ManagerTool:
         return player_filter_hint_list
 
     def tournament_to_activate(self, tournament_list):
+        """Retourne True s'il y a possibilité d'activer un tournoi"""
         if len(tournament_list) > 0:
             return True
         else:
@@ -137,6 +142,7 @@ class ManagerTool:
         return in_progress
 
     def last_round_finish(self, tournament):
+        """Renvoi True si le dernier tour est terminé"""
         last = self.is_max_round(tournament)
         progress = self.round_in_progress(tournament)
         if last and not progress:
@@ -145,15 +151,16 @@ class ManagerTool:
             return False
 
     def check_inscriptin_open(self, tournament, player_list_all):
-            if tournament is None:
-                return "2"
-            if len(tournament.round_list) > 0:
-                return "3"
-            if len(tournament.player_list) == len(player_list_all):
-                return "4"
-            if not self.list_player_compatible_with_number_round(player_list_all):
-                return "7"
-            return 0
+        """Renvoi True s'il est possible de continuer les inscriptions"""
+        if tournament is None:
+            return "2"
+        if len(tournament.round_list) > 0:
+            return "3"
+        if len(tournament.player_list) == len(player_list_all):
+            return "4"
+        if not self.list_player_compatible_with_number_round(player_list_all):
+            return "7"
+        return 0
 
     def get_list_id_national(self, tournament):
         """Renvoi une liste de tous les id_national des joueurs inscrit au tournoi"""
@@ -231,35 +238,39 @@ class ManagerTool:
         return match_list
 
     def update_opponent_list(self, tournament, match_list):
+        """Met à joueur la liste des adversaires d'un joueur"""
         for match in match_list:
             for player_tournament in tournament.player_list:
                 if player_tournament["id_national"] == match.player_1:
                     player_tournament["opponent_list"].append(match.player_2)
-                else:
+                elif player_tournament["id_national"] == match.player_2:
                     player_tournament["opponent_list"].append(match.player_1)
 
     def add_round(self, tournament):
+        """Ajoute un nouveau tour au tournoi"""
         match_list = self.get_match(tournament)
         round_name = self.get_name_next_round(tournament)
         round_ = Round(round_name, match_list)
         tournament.round_list.append(round_)
-        print("toto")
 
     def is_max_round(self, tournament):
         """Retourne True si le nombre maximum de tours du tournoi a été atteint"""
         return len(tournament.round_list) == tournament.round_number
 
     def get_name_next_round(self, tournament):
+        """Retourne le nom du dernier tour"""
         round_number = len(tournament.round_list) + 1
         return f"Tour {round_number}"
 
     def save_tournamen(self, tournament):
+        """Sauvegarde un tournoi dans un fichier json"""
         dump_str = tournament.to_dict()
         json_file = os.path.join(self.DIRECTORY_TOURNAMENT, f"{tournament.id}.json")
         with open(json_file, "w", encoding='utf-8') as f:
             json.dump(dump_str, f, ensure_ascii=False, indent=4)
 
     def load_all_tournament(self, tournament_list):
+        """Charge des tournois à partir de fichiers json"""
         directory_list = os.listdir(self.DIRECTORY_TOURNAMENT)
         for element in directory_list:
             path_element = os.path.join(self.DIRECTORY_TOURNAMENT, element)
@@ -269,12 +280,14 @@ class ManagerTool:
                     tournament_list.append(Tournament.from_dict(json_str))
 
     def save_all_player(self, player_list):
+        """Sauvegarde tous les joueurs dans un fichier json"""
         with open(self.JSON_PLAYER, 'w', encoding='utf-8') as file:
             for player in player_list:
                 json_line = json.dumps(player.to_dict(), ensure_ascii=False)
                 file.write(json_line + '\n')
 
     def load_player(self, player_list):
+        """Charge des joueurs contenus dans un fichier json"""
         with open(self.JSON_PLAYER, 'r', encoding='utf-8') as file:
             for line in file:
                 json_str = json.loads(line)

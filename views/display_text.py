@@ -1,4 +1,4 @@
-from .display_tool import *
+from views import DisplayTool
 
 
 class MenuTournament(DisplayTool):
@@ -61,6 +61,7 @@ class MenuHint(DisplayTool):
                        "(tapez * pour lister tout les joueurs) : ")
 
         return self.get_input()
+
 
 class MenuConfirmation(DisplayTool):
     """Demande à l'utilisateur de confirmer et renvoi True ou False"""

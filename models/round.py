@@ -1,8 +1,9 @@
 import datetime
 from .match import Match
 
+
 class Round:
-    """Créer un tour pour unmanager_tool tournoi d'échec"""
+    """Créer un tour pour un tournoi d'échec"""
 
     def __init__(self,
                  name,
@@ -40,6 +41,7 @@ class Round:
                      )
 
     def finish(self):
+        """Met à jour la date/heure de fin d'un tour"""
         self.date_time_end = self.get_date_time()
 
     def get_match_resume(self):
@@ -55,6 +57,7 @@ class Round:
             match.winner = match.get_winner()
 
     def is_finished(self):
+        """Renvoi True si le march est fini"""
         finished = True
         for match in self.match_list:
             if match.winner is None:

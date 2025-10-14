@@ -1,6 +1,7 @@
 import os
 from tabulate import tabulate
 
+
 class DisplayTool:
     """Permet gérer un affichage d'une page dans un terminal"""
     def __init__(self):
@@ -21,7 +22,7 @@ class DisplayTool:
         print(tabulate([[title]], tablefmt="rounded_outline"))
         print("")
 
-    def set_content(self, content, header_list = None):
+    def set_content(self, content, header_list=None):
         """Afficher un contenu sous forme de tableau
         Accepte un paramètre facultatif contenant les en-têtes du tableau"""
         self.content = content
@@ -33,7 +34,6 @@ class DisplayTool:
     def set_actions(self, actions):
         """Affiche une liste de choix à l'utilisateur"""
         self.actions = actions
-        action_table = []
         for cle in self.actions:
             print(f"[{cle}] {self.actions[cle]}")
             print("")
@@ -62,7 +62,7 @@ class DisplayTool:
                 print(f"Vous devez au moins saisir {self.min_character} caractères.")
         return input_
 
-    def get_input_choice(self, joker_list = []):
+    def get_input_choice(self, joker_list=[]):
         """Demande à l'utilisateur de choisir parmi des propositions"""
         choice_possible = []
         for cle in self.actions:
@@ -85,7 +85,7 @@ class DisplayTool:
 
 class InformationUser(DisplayTool):
     """Lance l'affichage d'un message avec un contenu précis"""
-    def execute(self, code, parameter = None):
+    def execute(self, code, parameter=None):
         self.clear()
         self.set_title("MESSAGE D'INFORMATION")
         self.set_message(self.get_message(code, parameter))
@@ -93,7 +93,8 @@ class InformationUser(DisplayTool):
         os.system("pause")
 
     @staticmethod
-    def get_message(code, parameter = None):
+    def get_message(code, parameter=None):
+        """Faire correspondre un message à un code"""
         message_dict = {
             "1": "Vous devez créer au moins un tournoi avant de pouvoir en activer.",
             "2": "Vous devez d'abord activer un tournoi.",

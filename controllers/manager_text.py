@@ -1,6 +1,6 @@
-from views.display_text import *
-from .manager_tool import *
-from models import *
+from controllers import ManagerTool
+from models import Tournament, Player
+from views import MenuConfirmation, MenuTournament, MenuNewPlayer
 
 
 class ManagerText:
@@ -14,7 +14,6 @@ class ManagerText:
 
     def get_tournament(self):
         """Renvoi un nouveau tournoi"""
-        tournament_id = self.manager_tool.get_national_id()
         menu = MenuTournament()
         value_dict = menu.execute()
         return Tournament(value_dict["name"],

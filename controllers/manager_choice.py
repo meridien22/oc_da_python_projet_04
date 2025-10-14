@@ -1,6 +1,10 @@
-from views.display_choice import *
-from views.display_text import *
-from .manager_tool import *
+from views import (MenuMain,
+                   MenuTournamentChoice,
+                   MenuInscriptionPlayer,
+                   MenuEnterResult,
+                   MenuEnterMacthResult,
+                   MenuHint)
+from controllers import ManagerTool
 
 
 class ManagerChoice:
@@ -10,7 +14,7 @@ class ManagerChoice:
     def __init__(self, display):
         self.manager_tool = ManagerTool()
 
-    def get_main_menu(self, tournament = None):
+    def get_main_menu(self, tournament=None):
         """Renvoi le choix de l'utilisateur dans le menu principal"""
         menu = MenuMain()
         return menu.execute(tournament)
@@ -84,7 +88,7 @@ class ManagerChoice:
             # Si le choix est un entier, on sort de la boucle et on retient ce choix
             try:
                 int(choice)
-                return player_filter_hint_list[int(choice) -1]
+                return player_filter_hint_list[int(choice) - 1]
             except ValueError:
                 pass
             # Si le choix est "s" on va à la page suivante
@@ -101,6 +105,7 @@ class ManagerChoice:
                 return None
 
     def get_enter_result(self, tournament, player_list):
+        """Permet de choisir un match dans une liste puis de désigner un vainqueur"""
         round_ = tournament.round_list[-1]
         action_dict = {}
         match_for_result_list = []

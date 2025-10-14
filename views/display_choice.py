@@ -1,9 +1,9 @@
-from .display_tool import *
+from views import DisplayTool
 
 
 class MenuMain(DisplayTool):
     """Renvoi le choix de l'utilisateur dans le menu principal"""
-    def execute(self, tournament = None):
+    def execute(self, tournament=None):
         actions = {
             "1": "Créer un tournoi",
             "2": "Saisir un nouveau joueur",
@@ -30,8 +30,9 @@ class MenuMain(DisplayTool):
 
 class MenuListPaginated(DisplayTool):
     """Renvoi la commande saisi par l'utilisateur pour naviguer dans des pages"""
-    def execute(self, title, header_list, list_, page, page_full):
-        self.clear()
+    def execute(self, title, header_list, list_, page, page_full, clear=True):
+        if clear:
+            self.clear()
         self.set_title(title)
         self.set_content(list_, header_list)
         self.actions = []
@@ -40,7 +41,7 @@ class MenuListPaginated(DisplayTool):
                        f"[a = annuler] "
                        f"[Page {page}/{page_full}] :")
 
-        return  self.get_input_choice(['s', 'r', 'a'])
+        return self.get_input_choice(['s', 'r', 'a'])
 
 
 class MenuInscriptionPlayer(DisplayTool):
@@ -57,10 +58,10 @@ class MenuInscriptionPlayer(DisplayTool):
         self.prompt = (f"[Selectionnez un joueur] "
                        f"[s = suivant] "
                        f"[r = début] "
-                       f"[a = annuler] "
+                       f"[a = arrêter] "
                        f"[Page {page}/{page_full}] :")
 
-        return  self.get_input_choice(['s', 'r', 'a'])
+        return self.get_input_choice(['s', 'r', 'a'])
 
 
 class MenuTournamentChoice(DisplayTool):
@@ -75,7 +76,7 @@ class MenuTournamentChoice(DisplayTool):
         self.set_actions(action_dict)
         self.prompt = "Entrez le joueur de votre choix : "
 
-        return  self.get_input_choice()
+        return self.get_input_choice()
 
 
 class MenuEnterResult(DisplayTool):
@@ -86,7 +87,7 @@ class MenuEnterResult(DisplayTool):
         self.set_actions(action_dict)
         self.prompt = "Sélectionnez un match à encoder : "
 
-        return  self.get_input_choice()
+        return self.get_input_choice()
 
 
 class MenuEnterMacthResult(DisplayTool):

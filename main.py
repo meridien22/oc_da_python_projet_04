@@ -1,6 +1,7 @@
-from controllers import *
-
-
+from controllers import ManagerTool
+from controllers import ManagerContent
+from controllers import ManagerChoice
+from controllers import ManagerText
 
 
 # liste de tous les tournois
@@ -8,18 +9,18 @@ tournament_list = []
 # liste de tous les jouers
 player_list_all = []
 
-
 manager_tool = ManagerTool()
 manager_choice = ManagerChoice(manager_tool)
 manager_text = ManagerText(manager_tool)
 manager_content = ManagerContent(manager_tool)
 
+
 def start_tournament():
     tournament = None
-
+    # Chargement des joueurs
     manager_tool.load_player(player_list_all)
+    # Chargement des tournois
     manager_tool.load_all_tournament(tournament_list)
-
     choice = None
     while choice != "12":
         choice = manager_choice.get_main_menu(tournament)
@@ -45,7 +46,7 @@ def start_tournament():
                 check_inscriptin_open = manager_tool.check_inscriptin_open(tournament, player_list_all)
                 if check_inscriptin_open != 0:
                     manager_tool.get_information(check_inscriptin_open)
-                else :
+                else:
                     if manager_tool.inscriptipn_can_continue(tournament, player_list_all):
                         player = manager_choice.get_inscription(tournament, player_list_all)
                         if player is not None:
@@ -75,16 +76,18 @@ def start_tournament():
                             if confirmation:
                                 manager_tool.add_round(tournament)
                                 manager_tool.save_tournamen(tournament)
-                                manager_content.get_round_resume(tournament, player_list_all)
+                                manager_content.get_round_ranking(tournament, player_list_all)
                         else:
                             manager_tool.add_round(tournament)
                             manager_tool.save_tournamen(tournament)
-                            manager_content.get_round_resume(tournament, player_list_all)
+                            manager_content.get_round_ranking(tournament, player_list_all)
                     else:
                         manager_tool.get_information("9")
             # Saisir des résultats
             case "6":
-                if manager_tool.last_round_finish(tournament):
+                if tournament is None:
+                    manager_tool.get_information("2")
+                elif manager_tool.last_round_finish(tournament):
                     manager_tool.get_information("14")
                 elif not manager_tool.round_in_progress(tournament):
                     manager_tool.get_information("13")
@@ -126,5 +129,6 @@ def start_tournament():
             # Quitter
             case "12":
                 break
+
 
 start_tournament()

@@ -1,5 +1,5 @@
-from views.display_content import *
-from .manager_tool import *
+from controllers import ManagerTool
+from views import MenuPlayerList, MenuRoundResume
 
 
 class ManagerContent:
@@ -20,14 +20,13 @@ class ManagerContent:
     def get_player_full(self, player_list):
         """Affiche la liste des tous les joueurs de la fédération"""
         player_display_list = []
-        header_list = ["Nom", "Prénom", "Date de naissance", "Dd national"]
+        header_list = ["Prénom", "Nom", "Date de naissance", "Dd national"]
         title = "Liste de tous les joueurs de la fédération"
         for player in player_list:
             row = [player.first_name, player.name, player.date_birth, player.id_national]
             player_display_list.append(row)
-
-        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 15)
-
+        player_list_tri = sorted(player_display_list, key=lambda element: element[1])
+        self.manager_tool.get_list_paginated(title, header_list, player_list_tri, 15)
 
     def get_tournament_full(self, tournament_list):
         """Affiche la liste de tous les tournois"""
@@ -46,7 +45,7 @@ class ManagerContent:
 
         self.manager_tool.get_list_paginated(title, header_list, tournament_display_list, 10)
 
-    def get_round_resume(self, tournament, player_list):
+    def get_round_resume(self, tournament, player_list, pause=True):
         """Affiche le résumé des tours"""
         round_display_list = []
         for round_ in tournament.round_list:
@@ -65,12 +64,19 @@ class ManagerContent:
             row = [player_1, player_2, winner]
             match_display.append(row)
 
-        menu = MenuRoundREsume()
-        return menu.execute(tournament.name, roud_last.name, round_display_list, match_display)
+        menu = MenuRoundResume()
+        return menu.execute(tournament.name, roud_last.name, round_display_list, match_display, pause)
 
-    def get_ranking(self, tournament, player_list):
+    def get_round_ranking(self, tournament, player_list):
+        """Affiche les détails du dernier round et le classement général"""
+        pause = False
+        self.get_round_resume(tournament, player_list, pause)
+        clear = False
+        self.get_ranking(tournament, player_list, clear)
+
+    def get_ranking(self, tournament, player_list, clear=True):
         """Donne le classement d'un tournoi"""
-        player_tri = sorted(tournament.player_list, key=lambda element: element["score"], reverse = True)
+        player_tri = sorted(tournament.player_list, key=lambda element: element["score"], reverse=True)
         player_display_list = []
         header_list = ["Joueurs", "Score"]
         title = "Classement général"
@@ -81,5 +87,4 @@ class ManagerContent:
             row = [player, score]
             player_display_list.append(row)
 
-        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 10)
-
+        self.manager_tool.get_list_paginated(title, header_list, player_display_list, 10, clear)

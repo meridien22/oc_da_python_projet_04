@@ -15,16 +15,17 @@ class Player:
 
     @classmethod
     def from_dict(cls, data):
+        """Renvoi un joueur sous forme de liste"""
         return Player(data["name"],
-                     data["first_name"],
-                     data["date_birth"],
-                     data["id_national"])
+                      data["first_name"],
+                      data["date_birth"],
+                      data["id_national"])
 
     def to_dict(self):
+        """Créer un objet Player à partir d'une liste"""
         return {
             "name": self.name,
             "first_name": self.first_name,
             "date_birth": self.date_birth,
             "id_national": self.id_national
         }
-

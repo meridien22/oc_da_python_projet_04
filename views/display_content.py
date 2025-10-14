@@ -1,4 +1,6 @@
-from .display_tool import *
+import os
+from views import DisplayTool
+
 
 class MenuPlayerList(DisplayTool):
     """Affiche une liste de joueur"""
@@ -6,14 +8,15 @@ class MenuPlayerList(DisplayTool):
         self.clear()
         self.min_character = 0
         self.set_title(f"{name} : JOUEURS INSCRITS")
-        self.set_content(player_list)
+        player_list_tri = sorted(player_list, key=lambda element: element[1])
+        self.set_content(player_list_tri)
         print("")
         os.system("pause")
 
 
-class MenuRoundREsume(DisplayTool):
+class MenuRoundResume(DisplayTool):
     """Affiche le résumé des tours"""
-    def execute(self, tournament_name, round_name, round_list, match_list):
+    def execute(self, tournament_name, round_name, round_list, match_list, pause=True):
         self.clear()
         self.min_character = 0
         self.set_title(f"{tournament_name} : RESUME DES TOURS")
@@ -23,4 +26,5 @@ class MenuRoundREsume(DisplayTool):
         header_list = ["Joueur 1", "Joueur 2", "Gagnant"]
         self.set_content(match_list, header_list)
         print("")
-        os.system("pause")
+        if pause:
+            os.system("pause")

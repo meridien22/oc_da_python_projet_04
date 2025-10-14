@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<testsuites disabled="0" errors="0" failures="0" tests="16" time="0.0">
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\controllers\__init___py" skipped="0" tests="1" time="0" file=".\controllers\__init__.py">
+		<testcase name="Check passed" file=".\controllers\__init__.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\controllers\manager_choice_py" skipped="0" tests="1" time="0" file=".\controllers\manager_choice.py">
+		<testcase name="Check passed" file=".\controllers\manager_choice.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\controllers\manager_content_py" skipped="0" tests="1" time="0" file=".\controllers\manager_content.py">
+		<testcase name="Check passed" file=".\controllers\manager_content.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\controllers\manager_text_py" skipped="0" tests="1" time="0" file=".\controllers\manager_text.py">
+		<testcase name="Check passed" file=".\controllers\manager_text.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\controllers\manager_tool_py" skipped="0" tests="1" time="0" file=".\controllers\manager_tool.py">
+		<testcase name="Check passed" file=".\controllers\manager_tool.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\main_py" skipped="0" tests="1" time="0" file=".\main.py">
+		<testcase name="Check passed" file=".\main.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\models\__init___py" skipped="0" tests="1" time="0" file=".\models\__init__.py">
+		<testcase name="Check passed" file=".\models\__init__.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\models\match_py" skipped="0" tests="1" time="0" file=".\models\match.py">
+		<testcase name="Check passed" file=".\models\match.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\models\player_py" skipped="0" tests="1" time="0" file=".\models\player.py">
+		<testcase name="Check passed" file=".\models\player.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\models\round_py" skipped="0" tests="1" time="0" file=".\models\round.py">
+		<testcase name="Check passed" file=".\models\round.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\models\tournament_py" skipped="0" tests="1" time="0" file=".\models\tournament.py">
+		<testcase name="Check passed" file=".\models\tournament.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\views\__init___py" skipped="0" tests="1" time="0" file=".\views\__init__.py">
+		<testcase name="Check passed" file=".\views\__init__.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\views\display_choice_py" skipped="0" tests="1" time="0" file=".\views\display_choice.py">
+		<testcase name="Check passed" file=".\views\display_choice.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\views\display_content_py" skipped="0" tests="1" time="0" file=".\views\display_content.py">
+		<testcase name="Check passed" file=".\views\display_content.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\views\display_text_py" skipped="0" tests="1" time="0" file=".\views\display_text.py">
+		<testcase name="Check passed" file=".\views\display_text.py"/>
+	</testsuite>
+	<testsuite disabled="0" errors="0" failures="0" name="flake8._\views\display_tool_py" skipped="0" tests="1" time="0" file=".\views\display_tool.py">
+		<testcase name="Check passed" file=".\views\display_tool.py"/>
+	</testsuite>
+</testsuites>
+
