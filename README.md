@@ -43,18 +43,10 @@ Vous pouvez ensuite lancer le script :
 
 ## Procédure pour générer un rapport flake8 du projet au format html :
 
-Installer le paquet "flake8-formatter-junit-xml" qui permet de convertir le rapport standard de Flake8 en un format junit-xml :
+Installer le paquet "flake8-html" qui permet de convertir le rapport standard de Flake8 en un format HTML :
 
-**pip install flake8-formatter-junit-xml**
+**pip install flake8-html**
 
-Installer le paquet "junit2html" qui epermet de convertir les fichiers de rapport JUnit XML en un rapport visuel lisible au format HTML :
+Exécuter ensuite la commande suivante pour générer le rapport flake8 au format HTML :
 
-**pip install junit2html**
-
-Exécuter la commande suivante pour générer le rapport flake8 au format junit-xml :
-
-**flake8 --output-file=flake8_report.xml --format=junit-xml**
-
-Exécuter la commande suivant pour convertir le fichier xml obtenu au format HTML :
-
-**junit2html flake8_report.xml flake8_report.html**
+**flake8 --format=html --htmldir=flake_report**

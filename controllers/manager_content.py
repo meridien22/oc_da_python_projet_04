@@ -20,7 +20,7 @@ class ManagerContent:
     def get_player_full(self, player_list):
         """Affiche la liste des tous les joueurs de la fédération"""
         player_display_list = []
-        header_list = ["Prénom", "Nom", "Date de naissance", "Dd national"]
+        header_list = ["Prénom", "Nom", "Date de naissance", "Id national"]
         title = "Liste de tous les joueurs de la fédération"
         for player in player_list:
             row = [player.first_name, player.name, player.date_birth, player.id_national]
