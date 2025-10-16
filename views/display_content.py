@@ -8,8 +8,7 @@ class MenuPlayerList(DisplayTool):
         self.clear()
         self.min_character = 0
         self.set_title(f"{name} : JOUEURS INSCRITS")
-        player_list_tri = sorted(player_list, key=lambda element: element[1])
-        self.set_content(player_list_tri)
+        self.set_content(player_list)
         print("")
         os.system("pause")
 

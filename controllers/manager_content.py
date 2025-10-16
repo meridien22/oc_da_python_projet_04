@@ -9,13 +9,15 @@ class ManagerContent:
     def get_player_register(self, player_list, tournament):
         """Affiche la liste des joueurs inscrits"""
         player_display_list = []
+        player_num = 1
         for player_id_national in self.manager_tool.get_list_id_national(tournament):
             player = self.manager_tool.get_player_from_id(player_list, player_id_national)
-            row = [player.first_name, player.name, player.date_birth, player.id_national]
+            row = [player_num, player.first_name, player.name, player.date_birth, player.id_national]
             player_display_list.append(row)
-
+            player_num += 1
+        player_list_tri = sorted(player_display_list, key=lambda element: element[0])
         menu = MenuPlayerList()
-        return menu.execute(tournament.name, player_display_list)
+        return menu.execute(tournament.name, player_list_tri)
 
     def get_player_full(self, player_list):
         """Affiche la liste des tous les joueurs de la fédération"""
