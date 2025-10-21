@@ -12,7 +12,7 @@ class MenuMain(DisplayTool):
             "5": "Démarrer un tour",
             "6": "Saisir des résultats",
             "7": "Résumé des tours",
-            "8": "Liste des joueus inscrits",
+            "8": "Liste des joueurs inscrits",
             "9": "Liste tous les joueurs",
             "10": "Lister tous les tournois",
             "11": "Classement du tournoi",
@@ -38,7 +38,7 @@ class MenuListPaginated(DisplayTool):
         self.actions = []
         self.prompt = (f"[s = suivant] "
                        f"[r = début] "
-                       f"[a = annuler] "
+                       f"[a = arrêter] "
                        f"[Page {page}/{page_full}] :")
 
         return self.get_input_choice(['s', 'r', 'a'])
@@ -47,9 +47,11 @@ class MenuListPaginated(DisplayTool):
 class MenuInscriptionPlayer(DisplayTool):
     """Renvoi la commande saisi par l'utilisateur pour naviguer la liste des jouers
     Permet également de choisir un joueur dans la page"""
-    def execute(self, name, player_dict, page, page_full):
+    def execute(self, name, player_dict, page, page_full, player_found):
         self.clear()
         self.set_title(f"{name} : INSCRIPTION D'UN JOUEUR")
+        if not player_found:
+            self.set_message("Aucun joueur ne correspond à ce critère.")
         action_dict = {}
         # on crée le menu
         for key, value in player_dict.items():

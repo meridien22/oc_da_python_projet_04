@@ -292,3 +292,22 @@ class ManagerTool:
             for line in file:
                 json_str = json.loads(line)
                 player_list.append(Player.from_dict(json_str))
+
+    def get_list_tuple(self, tournament, player_list):
+        """Retourne un tuple contenant deux listes, chacune contenant deux éléments : un joueur et un score"""
+        list_tuple = []
+        for round_ in tournament.round_list:
+            for match in round_.match_list:
+                player_1 = self.get_player_from_id(player_list, match.player_1)
+                player_2 = self.get_player_from_id(player_list, match.player_2)
+                score_1 = self.get_score_from_id(tournament, match.player_1)
+                score_2 = self.get_score_from_id(tournament, match.player_2)
+                list_tuple.append(([player_1, score_1],[player_2, score_2]))
+        return list_tuple
+
+    def get_score_from_id(self, tournament, id_national):
+        """Retourne le score d'un joueur à partir de son id national"""
+        for player in tournament.player_list:
+            if player["id_national"] == id_national:
+                return player["score"]
+        return None

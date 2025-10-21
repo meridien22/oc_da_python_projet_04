@@ -2,6 +2,7 @@ from controllers import ManagerTool
 from controllers import ManagerContent
 from controllers import ManagerChoice
 from controllers import ManagerText
+import os
 
 
 # liste de tous les tournois

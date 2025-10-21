@@ -1,13 +1,12 @@
 import random
 
-
 class Match:
     """Crée un match entre 2 joueurs"""
 
     def __init__(self, player_1_id_national, player_2_id_national, winner=None):
         self.player_1 = player_1_id_national
         self.player_2 = player_2_id_national
-        self.winner = None
+        self.winner = winner
 
     def __str__(self):
         return (f"{self.player_1} "

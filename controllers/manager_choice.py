@@ -30,6 +30,7 @@ class ManagerChoice:
 
     def get_inscription(self, tournament, player_list):
         """Renvoi un joueur sélectionné parmi une liste de joueur"""
+        player_found = False
         # On demande à l'utilisateur ses critères de recherche
         menu = MenuHint()
         hint = menu.execute(tournament.name)
@@ -50,6 +51,8 @@ class ManagerChoice:
         # si la recherche ne renvoie aucun résultat, on renvoie la premmière liste filtrée
         if len(player_filter_hint_list) == 0:
             player_filter_hint_list = player_filter_list
+        else:
+            player_found = True
 
         # on gère maintenant l'affichage des résultats par page
 
@@ -84,7 +87,7 @@ class ManagerChoice:
                 if player in list_extract:
                     display_dict[index] = player
             menu = MenuInscriptionPlayer()
-            choice = menu.execute(tournament.name, display_dict, page, page_full)
+            choice = menu.execute(tournament.name, display_dict, page, page_full, player_found)
             # Si le choix est un entier, on sort de la boucle et on retient ce choix
             try:
                 int(choice)
