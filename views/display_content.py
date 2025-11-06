@@ -6,7 +6,6 @@ class MenuPlayerList(DisplayTool):
     """Affiche une liste de joueur"""
     def execute(self, name, player_list):
         self.clear()
-        self.min_character = 0
         self.set_title(f"{name} : JOUEURS INSCRITS")
         self.set_content(player_list)
         print("")

@@ -11,7 +11,7 @@ class ManagerChoice:
 
     FIND_ALL = "*"
 
-    def __init__(self, display):
+    def __init__(self):
         self.manager_tool = ManagerTool()
 
     def get_main_menu(self, tournament=None):

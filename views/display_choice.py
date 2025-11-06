@@ -41,7 +41,7 @@ class MenuListPaginated(DisplayTool):
                        f"[a = arrêter] "
                        f"[Page {page}/{page_full}] :")
 
-        return self.get_input_choice(['s', 'r', 'a'])
+        return self.get_input_choice(('s', 'r', 'a'))
 
 
 class MenuInscriptionPlayer(DisplayTool):
@@ -63,7 +63,7 @@ class MenuInscriptionPlayer(DisplayTool):
                        f"[a = arrêter] "
                        f"[Page {page}/{page_full}] :")
 
-        return self.get_input_choice(['s', 'r', 'a'])
+        return self.get_input_choice(('s', 'r', 'a'))
 
 
 class MenuTournamentChoice(DisplayTool):

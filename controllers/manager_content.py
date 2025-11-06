@@ -3,7 +3,7 @@ from views import MenuPlayerList, MenuRoundResume
 
 
 class ManagerContent:
-    def __init__(self, display):
+    def __init__(self):
         self.manager_tool = ManagerTool()
 
     def get_player_register(self, player_list, tournament):

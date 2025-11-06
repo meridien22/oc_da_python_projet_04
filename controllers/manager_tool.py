@@ -3,6 +3,8 @@ import re
 import datetime
 import os
 import json
+import copy
+import math
 from views import InformationUser, MenuListPaginated
 from models import Tournament, Match, Player, Round
 
@@ -169,74 +171,6 @@ class ManagerTool:
             id_national_list.append(player["id_national"])
         return id_national_list
 
-    def get_match(self, tournament):
-        """" Renvoi les matches d'un tour
-        1er tour : tirage aléatoire
-        tour suivant : tirage score => tirage logique => tirage aléatoire"""
-
-        # si c'est le premier tour, on mélange les joueurs aléatoirement
-        if len(tournament.round_list) == 0:
-            random.shuffle(tournament.player_list)
-        # sinon on trie les joueurs en fonction de leurs scores
-        else:
-            tournament.player_list.sort(key=lambda element: element["score"])
-
-        draw = self.get_draw(tournament)
-        index_modifier = 1
-        while draw == "Echec":
-            draw = self.get_draw(tournament)
-            # tirage logique en essayant de respecter le plus possible
-            # le tri par score
-            if index_modifier < len(tournament.player_list):
-                # on soustrait à la liste le joueur qui correxpond
-                # à l'index modifieur
-                player_modifier = tournament.player_list.pop(index_modifier)
-                # on l'insert dans la liste à la position suivante
-                tournament.player_list.insert(index_modifier + 1, player_modifier)
-                index_modifier += 1
-            # tirage aléatoire car la méthode précédnte a échoué
-            else:
-                random.shuffle(tournament.player_list)
-
-        return draw
-
-    def get_draw(self, tournament):
-        """Propose un tirage pour un tour"""
-        index_player_1 = 0
-        index_player_2 = 1
-        match_list = []
-        while index_player_2 < len(tournament.player_list):
-            index_search = index_player_2
-            player_1 = tournament.player_list[index_player_1]
-            player_2 = tournament.player_list[index_player_2]
-            # cas où le match a déjà été joué
-            while player_2["id_national"] in player_1["opponent_list"]:
-
-                # cas ou l'algorithme n'a pas réussi à proposer
-                # une combinaison cohérente car
-                # l'index de recherce est arrivé au bout de la liste
-                if index_search + 1 == len(tournament.player_list):
-                    return "Echec"
-                # on soustrait à la liste le joueur qui vient après le joueur 2
-                player_next = tournament.player_list.pop(index_search + 1)
-                # on l'insert dans la liste après le joueur 1
-                tournament.player_list.insert(index_player_1 + 1, player_next)
-                # on crée un nouveau match pour pouvoir tester
-                # s'il a déjà été joué ou non
-                player_1 = tournament.player_list[index_player_1]
-                player_2 = tournament.player_list[index_player_2]
-                # on incrémente l'index de recherche de 1 pour aller chercher
-                # le prochain candididat si le match a déjà été joué
-                index_search += 1
-            match = Match(player_1["id_national"], player_2["id_national"])
-            match_list.append(match)
-            index_player_1 += 2
-            index_player_2 += 2
-        # sortie du while sans avoir rencontré d'échec,
-        # on met à jour la liste des adversaires des joueurs
-        self.update_opponent_list(tournament, match_list)
-        return match_list
-
     def update_opponent_list(self, tournament, match_list):
         """Met à joueur la liste des adversaires d'un joueur"""
         for match in match_list:
@@ -246,9 +180,8 @@ class ManagerTool:
                 elif player_tournament["id_national"] == match.player_2:
                     player_tournament["opponent_list"].append(match.player_1)
 
-    def add_round(self, tournament):
+    def add_round(self, tournament, match_list):
         """Ajoute un nouveau tour au tournoi"""
-        match_list = self.get_match(tournament)
         round_name = self.get_name_next_round(tournament)
         round_ = Round(round_name, match_list)
         tournament.round_list.append(round_)
@@ -302,7 +235,7 @@ class ManagerTool:
                 player_2 = self.get_player_from_id(player_list, match.player_2)
                 score_1 = self.get_score_from_id(tournament, match.player_1)
                 score_2 = self.get_score_from_id(tournament, match.player_2)
-                list_tuple.append(([player_1, score_1],[player_2, score_2]))
+                list_tuple.append(([player_1, score_1], [player_2, score_2]))
         return list_tuple
 
     def get_score_from_id(self, tournament, id_national):

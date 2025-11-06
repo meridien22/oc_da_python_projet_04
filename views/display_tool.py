@@ -1,8 +1,8 @@
-import os
 from tabulate import tabulate
+import os
 
 
-class DisplayTool:
+class DisplayTool():
     """Permet gérer un affichage d'une page dans un terminal"""
     def __init__(self):
         self.title = None
@@ -62,7 +62,7 @@ class DisplayTool:
                 print(f"Vous devez au moins saisir {self.min_character} caractères.")
         return input_
 
-    def get_input_choice(self, joker_list=[]):
+    def get_input_choice(self, joker_list=()):
         """Demande à l'utilisateur de choisir parmi des propositions"""
         choice_possible = []
         for cle in self.actions:

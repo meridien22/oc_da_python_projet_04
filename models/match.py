@@ -1,5 +1,6 @@
 import random
 
+
 class Match:
     """Crée un match entre 2 joueurs"""
 

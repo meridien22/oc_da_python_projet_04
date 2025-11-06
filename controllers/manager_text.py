@@ -4,7 +4,7 @@ from views import MenuConfirmation, MenuTournament, MenuNewPlayer
 
 
 class ManagerText:
-    def __init__(self, display):
+    def __init__(self):
         self.manager_tool = ManagerTool()
 
     def get_confirmation(self, message):
