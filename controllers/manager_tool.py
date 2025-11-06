@@ -3,10 +3,8 @@ import re
 import datetime
 import os
 import json
-import copy
-import math
 from views import InformationUser, MenuListPaginated
-from models import Tournament, Match, Player, Round
+from models import Tournament, Player, Round
 
 
 class ManagerTool:
@@ -227,7 +225,8 @@ class ManagerTool:
                 player_list.append(Player.from_dict(json_str))
 
     def get_list_tuple(self, tournament, player_list):
-        """Retourne un tuple contenant deux listes, chacune contenant deux éléments : un joueur et un score"""
+        """Retourne un tuple contenant deux listes, chacune contenant
+        deux éléments : un joueur et un score"""
         list_tuple = []
         for round_ in tournament.round_list:
             for match in round_.match_list:

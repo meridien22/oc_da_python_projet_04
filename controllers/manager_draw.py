@@ -33,14 +33,15 @@ class ManagerDraw:
                     break
                 tuple_ = (element_base, list_copy[index])
                 if tuple_ not in self.list_forbidden:
-                    print(f"tuple : {tuple_} => ok")
+                    # print(f"tuple : {tuple_} => ok")
 
                     list_pair.append(tuple_)
                     list_copy.pop(index)
                     list_copy.pop(0)
                     break
                 else:
-                    print(f"tuple : {tuple_} => no ok")
+                    pass
+                    # print(f"tuple : {tuple_} => no ok")
         if len(list_pair) > 0:
             return list_pair
         else:
@@ -71,7 +72,7 @@ class ManagerDraw:
         for combination in self.get_combination(list_end):
             self.replace_end_list(list_copy, combination)
             list_combination.append(copy.deepcopy(list_copy))
-        print(f"list_combination : {list_combination}")
+        # print(f"list_combination : {list_combination}")
         return list_combination
 
     def update_list_tournament(self):
@@ -98,12 +99,11 @@ class ManagerDraw:
         end_number = 3
         end_draw = False
         list_pair = []
-        i = 1
         while not end_draw:
             for combination in self.get_list_combination(end_number):
                 if end_draw:
                     break
-                print(f"combination : {combination}")
+                # print(f"combination : {combination}")
                 list_pair = self.get_pairs(combination)
                 if list_pair:
                     end_draw = True

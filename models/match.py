@@ -40,3 +40,14 @@ class Match:
             return self.player_2
         else:
             return 0
+
+    def get_representation(self):
+        """Retourne un tuple contenant deux listes, chacune contenant
+        deux éléments : un joueur et un score"""
+        if self.winner == self.player_1:
+            tuple_ = ([self.player_1, 1], [self.player_1, 0])
+        elif self.winner == self.player_2:
+            tuple_ = ([self.player_1, 0], [self.player_1, 1])
+        else:
+            tuple_ = ([self.player_1, 0.5], [self.player_1, 0.5])
+        return tuple_
